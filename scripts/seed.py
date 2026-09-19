@@ -1,0 +1,521 @@
+"""
+Script de Seed Idempotente para Inicialización de Cultivos y Patologías en Agraria.
+Inserta los 6 cultivos requeridos y todas las enfermedades especificadas sin duplicar registros.
+"""
+
+import json
+import os
+import sys
+
+SEED_CROPS = [
+    {
+        "id": "arroz",
+        "name": "Arroz",
+        "scientificName": "Oryza sativa",
+        "description": "Gramínea cereal cultivada ampliamente en zonas tropicales y templadas bajo riego o secano.",
+        "active": True
+    },
+    {
+        "id": "maiz",
+        "name": "Maíz",
+        "scientificName": "Zea mays",
+        "description": "Cereal básico de grano alto en almidón, sensible a sequías y patógenos foliares.",
+        "active": True
+    },
+    {
+        "id": "frijol",
+        "name": "Frijol",
+        "scientificName": "Phaseolus vulgaris",
+        "description": "Leguminosa de ciclo corto fundamental en rotación de cultivos y seguridad alimentaria.",
+        "active": True
+    },
+    {
+        "id": "cafe",
+        "name": "Café",
+        "scientificName": "Coffea arabica",
+        "description": "Cultivo perenne de ladera tropical, altamente susceptible a variaciones climáticas y royas.",
+        "active": True
+    },
+    {
+        "id": "tomate",
+        "name": "Tomate",
+        "scientificName": "Solanum lycopersicum",
+        "description": "Solanácea hortícola de alto valor comercial y alta exigencia de manejo integrado de plagas y hongos.",
+        "active": True
+    },
+    {
+        "id": "platano",
+        "name": "Plátano",
+        "scientificName": "Musa paradisiaca",
+        "description": "Musácea de fruto esencial para la economía campesina y exportación agroindustrial.",
+        "active": True
+    }
+]
+
+SEED_DISEASES = [
+    # ARROZ
+    {
+        "id": "pyricularia_arroz",
+        "cropId": "arroz",
+        "name": "Pyricularia",
+        "scientificName": "Magnaporthe oryzae",
+        "type": "fungal",
+        "description": "Una de las enfermedades más destructivas del arroz, afecta hojas, nudos y panículas.",
+        "symptoms": [
+            "Manchas en forma de rombo o huso con centro gris y bordes marrones en hojas.",
+            "Lesiones oscuras en el cuello de la panícula que provocan espigas vanas.",
+            "Estrés hídrico y amarillamiento progresivo."
+        ],
+        "recommendations": [
+            "Utilizar variedades resistentes certificadas.",
+            "Evitar la fertilización nitrogenada excesiva.",
+            "Manejo adecuado de la lámina de agua en el lote.",
+            "Aplicación oportuna de fungicidas triazoles o estrobirulinas al inicio de espigamiento si hay presión."
+        ],
+        "affectedParts": ["leaf", "stem"],
+        "active": True
+    },
+    {
+        "id": "mancha_parda_arroz",
+        "cropId": "arroz",
+        "name": "Mancha parda",
+        "scientificName": "Bipolaris oryzae",
+        "type": "fungal",
+        "description": "Enfermedad fúngica asociada comúnmente a suelos degradados o deficiencias nutricionales.",
+        "symptoms": [
+            "Lesiones ovales a circulares de color castaño oscuro con halo amarillo.",
+            "Decoloración y manchas oscuras en las semillas y grano.",
+            "Disminución del vigor de plántulas."
+        ],
+        "recommendations": [
+            "Corregir deficiencias de potasio, silicio y manganeso mediante análisis de suelo.",
+            "Tratamiento térmico o químico de semillas antes de siembra.",
+            "Rotación con leguminosas para recuperar estructura edáfica."
+        ],
+        "affectedParts": ["leaf", "fruit"],
+        "active": True
+    },
+    {
+        "id": "tizon_bacteriano_arroz",
+        "cropId": "arroz",
+        "name": "Tizón bacteriano",
+        "scientificName": "Xanthomonas oryzae pv. oryzae",
+        "type": "bacterial",
+        "description": "Infección vascular severa que ocasiona marchitez y secamiento foliar.",
+        "symptoms": [
+            "Rayas longitudinales acuosas en los bordes de las hojas que avanzan hacia el centro.",
+            "Hojas que se tornan blanco-amarillentas y mueren rápidamente (kresek).",
+            "Gotículas lechosas bacterianas visibles en las mañanas."
+        ],
+        "recommendations": [
+            "Drenar temporalmente campos inundados para reducir propagación.",
+            "Evitar daños mecánicos al follaje durante labores de cultivo.",
+            "Desinfección estricta de herramientas de corte y maquinaria."
+        ],
+        "affectedParts": ["leaf"],
+        "active": True
+    },
+    # MAÍZ
+    {
+        "id": "roya_comun_maiz",
+        "cropId": "maiz",
+        "name": "Roya común",
+        "scientificName": "Puccinia sorghi",
+        "type": "fungal",
+        "description": "Enfermedad foliar frecuente en zonas templadas y alturas intermedias con alta humedad.",
+        "symptoms": [
+            "Pústulas pulverulentas de color marrón canela en ambas caras de la hoja.",
+            "Ruptura de la epidermis foliar y secamiento prematuro de hojas bajas.",
+            "Reducción en el llenado de grano."
+        ],
+        "recommendations": [
+            "Siembra de híbridos con tolerancia genética comprobada.",
+            "Monitoreo semanal desde etapas vegetativas tempranas (V6-V8).",
+            "Aplicación foliar de fungicidas sistémicos en umbral de daño económico."
+        ],
+        "affectedParts": ["leaf"],
+        "active": True
+    },
+    {
+        "id": "tizon_foliar_norte_maiz",
+        "cropId": "maiz",
+        "name": "Tizón foliar del norte",
+        "scientificName": "Exserohilum turcicum",
+        "type": "fungal",
+        "description": "Provoca necrosis foliar extendida en climas frescos y húmedos.",
+        "symptoms": [
+            "Lesiones elípticas grandes (2 a 15 cm) color verde grisáceo a marrón claro.",
+            "Fusión de manchas que queman franjas enteras de la hoja.",
+            "Reducción drástica de área fotosintética útil."
+        ],
+        "recommendations": [
+            "Incorporación profunda de rastrojos de cosecha anterior.",
+            "Rotación de cultivos con especies no gramíneas.",
+            "Fungicidas con mezclas de estrobirulinas y triazoles previo a floración."
+        ],
+        "affectedParts": ["leaf"],
+        "active": True
+    },
+    {
+        "id": "mancha_asfalto_maiz",
+        "cropId": "maiz",
+        "name": "Mancha de asfalto",
+        "scientificName": "Phyllachora maydis",
+        "type": "fungal",
+        "description": "Complejo fúngico agresivo capaz de secar un cultivo entero en pocos días.",
+        "symptoms": [
+            "Pequeñas protuberancias negras y brillantes como gotas de alquitrán o asfalto sobre el haz.",
+            "Halo necrótico alrededor de los puntos negros conocido como ojo de pescado.",
+            "Secado violento de la planta entera."
+        ],
+        "recommendations": [
+            "Monitoreo permanente en regiones endémicas con neblina constante.",
+            "Intervención química inmediata al detectar los primeros ascostromas negros.",
+            "Manejo de densidades de siembra para favorecer la circulación de aire."
+        ],
+        "affectedParts": ["leaf"],
+        "active": True
+    },
+    # FRIJOL
+    {
+        "id": "antracnosis_frijol",
+        "cropId": "frijol",
+        "name": "Antracnosis",
+        "scientificName": "Colletotrichum lindemuthianum",
+        "type": "fungal",
+        "description": "Afecta todas las partes aéreas de la planta en condiciones de humedad alta y temperatura fresca.",
+        "symptoms": [
+            "Lesiones alargadas de color rojo oscuro a negro a lo largo de las nervaduras en el envés.",
+            "Chancros hundidos con borde rojizo en tallos y vainas.",
+            "Vainas deformadas con semillas manchadas."
+        ],
+        "recommendations": [
+            "Uso exclusivo de semilla libre de patógenos.",
+            "Evitar trabajar en el lote mientras el follaje esté húmedo por rocío.",
+            "Tratamiento preventivo con cúpricos o fungicidas protectantes."
+        ],
+        "affectedParts": ["leaf", "stem", "fruit"],
+        "active": True
+    },
+    {
+        "id": "roya_frijol",
+        "cropId": "frijol",
+        "name": "Roya del frijol",
+        "scientificName": "Uromyces appendiculatus",
+        "type": "fungal",
+        "description": "Patógeno cosmopolita que desfolia la planta durante floración y fructificación.",
+        "symptoms": [
+            "Pústulas circulares diminutas color café rojizo en el envés rodeadas de halo clorótico.",
+            "Caída prematura de hojas.",
+            "Disminución del tamaño de vainas y número de granos."
+        ],
+        "recommendations": [
+            "Variedades con genes de resistencia específicos.",
+            "Eliminación de malezas hospederas y residuos de cosecha.",
+            "Aplicaciones de azufre o triazoles según etapa fenológica."
+        ],
+        "affectedParts": ["leaf"],
+        "active": True
+    },
+    {
+        "id": "mosaico_comun_frijol",
+        "cropId": "frijol",
+        "name": "Mosaico común",
+        "scientificName": "Bean common mosaic virus (BCMV)",
+        "type": "viral",
+        "description": "Enfermedad viral transmitida por pulgones y a través de semilla contaminada.",
+        "symptoms": [
+            "Moteado verde claro y verde oscuro con deformación y arrugamiento foliar.",
+            "Encrespamiento hacia abajo de los bordes de la lámina foliar.",
+            "Achaparramiento general de la planta."
+        ],
+        "recommendations": [
+            "Siembra de semilla certificada indexada para virus.",
+            "Control de vectores (pulgones) con extractos botánicos o insecticidas selectivos.",
+            "Eliminación y quema de plantas que muestren síntomas iniciales."
+        ],
+        "affectedParts": ["leaf"],
+        "active": True
+    },
+    # CAFÉ
+    {
+        "id": "roya_cafe",
+        "cropId": "cafe",
+        "name": "Roya del café",
+        "scientificName": "Hemileia vastatrix",
+        "type": "fungal",
+        "description": "La enfermedad más crítica de la caficultura tradicional, ocasiona defoliación severa y paloteo.",
+        "symptoms": [
+            "Manchas amarillas translúcidas en el haz que luego generan polvo anaranjado en el envés.",
+            "Caída masiva de hojas y aborto de flores/frutos.",
+            "Pérdida de ramas productivas en la siguiente cosecha."
+        ],
+        "recommendations": [
+            "Renovación con variedades resistentes (ej: Castillo, Cenicafé 1, Catimor).",
+            "Poblaciones adecuadas y regulación de sombrío para reducir humedad estancada.",
+            "Plan de fertilización balanceado con énfasis en nitrógeno y potasio.",
+            "Calendario de aspersiones preventivas con fungicidas oxicloruro de cobre o sistémicos."
+        ],
+        "affectedParts": ["leaf"],
+        "active": True
+    },
+    {
+        "id": "ojo_de_gallo_cafe",
+        "cropId": "cafe",
+        "name": "Ojo de gallo",
+        "scientificName": "Mycena citricolor",
+        "type": "fungal",
+        "description": "Hongo que prolifera en microclimas muy húmedos, sombreados y con baja temperatura.",
+        "symptoms": [
+            "Manchas circulares bien delimitadas de color pardo claro que se blanquean al secarse.",
+            "Pequeñas estructuras en forma de alfiler con cabeza amarilla visibles sobre la mancha.",
+            "Defoliación rápida de brotes nuevos y manchas en frutos verdes."
+        ],
+        "recommendations": [
+            "Poda sanitaria de árboles de sombrío y deschuponado del cafeto.",
+            "Favorecer el drenaje en pendientes y cañadas húmedas.",
+            "Aplicación localizada de fungicidas cúpricos en focos iniciales."
+        ],
+        "affectedParts": ["leaf", "fruit"],
+        "active": True
+    },
+    {
+        "id": "antracnosis_cafe",
+        "cropId": "cafe",
+        "name": "Antracnosis",
+        "scientificName": "Colletotrichum coffeanum",
+        "type": "fungal",
+        "description": "Afecta frutos en desarrollo (mancha de hierro) y provoca muerte descendente de ramas.",
+        "symptoms": [
+            "Lesiones necróticas hundidas y oscuras sobre cerezas de café verdes y maduras.",
+            "Muerte descendente (die-back) de puntas de ramas desfoliadas.",
+            "Pasmamiento y caída prematura de frutos."
+        ],
+        "recommendations": [
+            "Protección contra granizadas y control de estrés fisiológico.",
+            "Podas de saneamiento de ramas secas con desinfección de tijeras.",
+            "Aplicación preventiva de protectores cúpricos durante llenado de fruto."
+        ],
+        "affectedParts": ["fruit", "leaf", "stem"],
+        "active": True
+    },
+    # TOMATE
+    {
+        "id": "tizon_temprano_tomate",
+        "cropId": "tomate",
+        "name": "Tizón temprano",
+        "scientificName": "Alternaria solani",
+        "type": "fungal",
+        "description": "Común en hojas senescentes y plantas bajo estrés por sequía o carga frutal.",
+        "symptoms": [
+            "Manchas circulares oscuras con anillos concéntricos concéntricos (diana).",
+            "Amarillamiento del tejido sano circundante.",
+            "Cancros oscuros en tallos de plántulas y lesiones cóncavas en la inserción del pedúnculo."
+        ],
+        "recommendations": [
+            "Eliminar hojas bajas envejecidas (deshoje sanitario).",
+            "Riego por goteo evitando mojar el follaje.",
+            "Rotación de cultivos sin otras solanáceas por 2 a 3 años."
+        ],
+        "affectedParts": ["leaf", "stem", "fruit"],
+        "active": True
+    },
+    {
+        "id": "tizon_tardio_tomate",
+        "cropId": "tomate",
+        "name": "Tizón tardío",
+        "scientificName": "Phytophthora infestans",
+        "type": "fungal",
+        "description": "Oomiceto extremadamente veloz y devastador en épocas lluviosas y frías.",
+        "symptoms": [
+            "Manchas acuosas verde oscuro irregulares que viran a negro y parecen quemaduras por helada.",
+            "Moho blanquecino en el envés de la hoja bajo alta humedad.",
+            "Frutos con manchas pardo oscuras firmes de superficie rugosa."
+        ],
+        "recommendations": [
+            "Monitoreo diario bajo condiciones de niebla o llovizna constante.",
+            "Aplicaciones preventivas de fungicidas de contacto (mancozeb, clorotalonil, cobre).",
+            "Destrucción inmediata de plantas con focos incontrolables."
+        ],
+        "affectedParts": ["leaf", "fruit", "stem"],
+        "active": True
+    },
+    {
+        "id": "oidio_tomate",
+        "cropId": "tomate",
+        "name": "Oídio",
+        "scientificName": "Oidium neolycopersici",
+        "type": "fungal",
+        "description": "Hongo polvoriento que prospera en condiciones de invernadero y veranos cálidos secos.",
+        "symptoms": [
+            "Polvillo blanco ceniciento que recubre el haz de las hojas.",
+            "Amarillamiento y necrosis foliar bajo el polvillo.",
+            "Reducción de tamaño de frutos por pérdida de follaje."
+        ],
+        "recommendations": [
+            "Mejorar ventilación en invernaderos y microtúneles.",
+            "Tratamientos con azufre soluble o bicarbonato de potasio.",
+            "Biofungicidas a base de Bacillus subtilis."
+        ],
+        "affectedParts": ["leaf", "stem"],
+        "active": True
+    },
+    # PLÁTANO
+    {
+        "id": "sigatoka_negra_platano",
+        "cropId": "platano",
+        "name": "Sigatoka negra",
+        "scientificName": "Pseudocercospora fijiensis",
+        "type": "fungal",
+        "description": "Es una de las enfermedades más importantes y destructivas del plátano a nivel global.",
+        "symptoms": [
+            "Manchas oscuras en las hojas que evolucionan de rayas rojizas a estrías negras.",
+            "Reducción drástica del área foliar fotosintética funcional.",
+            "Puede disminuir severamente el tamaño y peso de los racimos y provocar maduración prematura."
+        ],
+        "recommendations": [
+            "Deshoje fitosanitario temprano y oportuno cortando estrías antes de que esporulen.",
+            "Mantenimiento de canales de drenaje para abatir la humedad ambiental en la plantación.",
+            "Control de malezas y fertilización rica en silicio y potasio.",
+            "Programa de rotación de fungicidas protectores y sistémicos respetando periodos de carencia."
+        ],
+        "affectedParts": ["leaf"],
+        "active": True
+    },
+    {
+        "id": "mal_de_panama_platano",
+        "cropId": "platano",
+        "name": "Mal de Panamá",
+        "scientificName": "Fusarium oxysporum f. sp. cubense",
+        "type": "fungal",
+        "description": "Hongo del suelo letal y persistente que coloniza los haces vasculares de la planta.",
+        "symptoms": [
+            "Amarillamiento progresivo de las hojas más viejas hacia las más jóvenes.",
+            "Marchitez foliar con doblamiento de pecíolos formando una falda alrededor del pseudotallo.",
+            "Decoloración vascular pardo-rojiza en cortes transversales del pseudotallo.",
+            "Puede causar la muerte completa de la planta."
+        ],
+        "recommendations": [
+            "Cuarentena estricta y bioseguridad en fincas (pediluvios con desinfectantes amonio cuaternario).",
+            "Utilizar únicamente material de siembra libre de patógenos (vitroplantas).",
+            "No movilizar suelo, calzado o maquinaria desde lotes sospechosos.",
+            "Erradicación y aislamiento de plantas enfermas según protocolo oficial del ICA."
+        ],
+        "affectedParts": ["stem", "leaf"],
+        "active": True
+    },
+    {
+        "id": "moko_platano",
+        "cropId": "platano",
+        "name": "Moko del plátano",
+        "scientificName": "Ralstonia solanacearum",
+        "type": "bacterial",
+        "description": "Enfermedad bacteriana devastadora y de rápida diseminación en el cultivo de plátano.",
+        "symptoms": [
+            "Marchitez foliar acelerada y amarillamiento de la hoja bandera o brotes tiernos.",
+            "Deterioro, pudrición seca y necrosis de tejidos internos vasculares del pseudotallo.",
+            "Frutos con pulpa ennegrecida, seca o podrida interiormente antes de madurar.",
+            "Exudado bacteriano al sumergir un segmento de tallo en agua limpia."
+        ],
+        "recommendations": [
+            "Desinfección rigurosa de herramientas de corte (machetes, deshijadores) entre mata y mata con formol al 5% o cloro.",
+            "Enfundado prematuro de racimos y desflore temprano para evitar transmisión por insectos polinizadores.",
+            "Detección temprana e inyección de glifosato para erradicación in situ de la planta afectada y vecinas.",
+            "Control riguroso de fuentes de agua de escorrentía que puedan arrastrar la bacteria."
+        ],
+        "affectedParts": ["stem", "fruit", "leaf"],
+        "active": True
+    },
+    {
+        "id": "pudricion_corona_frutos_platano",
+        "cropId": "platano",
+        "name": "Pudrición de corona y frutos",
+        "scientificName": "Complejo fúngico postcosecha",
+        "type": "fungal",
+        "description": "Afecta la calidad comercial del racimo y puede aparecer principalmente después de la cosecha.",
+        "symptoms": [
+            "Oscurecimiento y pudrición blanda o seca de los tejidos del corte de la corona.",
+            "Desprendimiento prematuro de los dedos del racimo durante transporte y almacenamiento.",
+            "Favorecida por heridas mecánicas, desmane defectuoso y condiciones de alta humedad relativa."
+        ],
+        "recommendations": [
+            "Cortes limpios y uniformes al momento del desmane con cuchillos curvos afilados.",
+            "Lavado inmediato de racimos con agua clorada limpia para retirar látex.",
+            "Tratamiento de la corona con pasta cicatrizante o fungicidas postcosecha autorizados.",
+            "Transporte en condiciones óptimas de ventilación y temperatura."
+        ],
+        "affectedParts": ["fruit"],
+        "active": True
+    },
+    {
+        "id": "antracnosis_platano",
+        "cropId": "platano",
+        "name": "Antracnosis",
+        "scientificName": "Colletotrichum spp.",
+        "type": "fungal",
+        "description": "Enfermedad que ataca la cáscara del fruto, disminuyendo radicalmente su valor comercial.",
+        "symptoms": [
+            "Lesiones oscuras, redondeadas y deprimidas en la cáscara de los frutos.",
+            "Masas mucilaginosas color rosado o salmón en el centro de las manchas con alta humedad.",
+            "Puede desarrollarse y acelerarse durante las fases de maduración y almacenamiento."
+        ],
+        "recommendations": [
+            "Enfundado de racimos con bolsas perforadas tratadas en fases tempranas.",
+            "Evitar raspaduras y golpes durante la cosecha y embalaje.",
+            "Almacenar frutos en lugares frescos, secos y bien ventilados."
+        ],
+        "affectedParts": ["fruit"],
+        "active": True
+    }
+]
+
+def main():
+    print(f"=== Seed Script Agraria ===")
+    print(f"Cultivos a registrar: {len(SEED_CROPS)}")
+    print(f"Patologías a registrar: {len(SEED_DISEASES)}")
+
+    # Guardar en archivo JSON para carga de Firestore o modo Offline
+    output_path = os.path.join(os.path.dirname(__file__), "seed_data.json")
+    with open(output_path, "w", encoding="utf-8") as f:
+        json.dump({
+            "crops": SEED_CROPS,
+            "diseases": SEED_DISEASES
+        }, f, indent=2, ensure_ascii=False)
+
+    print(f"Exportado exitosamente a: {output_path}")
+
+    # Intentar conexión con Firebase Admin si existe credencial
+    cred_path = os.environ.get("GOOGLE_APPLICATION_CREDENTIALS")
+    if not cred_path:
+        candidate = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "agroeco-9490f-firebase-adminsdk-fbsvc-542c58cc73.json"))
+        if os.path.exists(candidate):
+            cred_path = candidate
+
+    if cred_path and os.path.exists(cred_path):
+        try:
+            import firebase_admin
+            from firebase_admin import credentials, firestore
+            print(f"Inicializando Firebase Admin con credencial: {os.path.basename(cred_path)}")
+            cred = credentials.Certificate(cred_path)
+            if not firebase_admin._apps:
+                firebase_admin.initialize_app(cred)
+            db = firestore.client()
+
+            print("Conectado a Cloud Firestore. Insertando registros...")
+            for crop in SEED_CROPS:
+                db.collection("crops").document(crop["id"]).set(crop, merge=True)
+                print(f" [OK] Cultivo registrado: {crop['name']}")
+
+            for disease in SEED_DISEASES:
+                db.collection("diseases").document(disease["id"]).set(disease, merge=True)
+                print(f" [OK] Patología registrada: {disease['name']} ({disease['cropId']})")
+
+            print("\n¡Catálogo maestro sincronizado exitosamente en Cloud Firestore!")
+        except Exception as e:
+            print(f"Error al conectar con Firestore Admin: {e}")
+            print("Los datos se encuentran listos en seed_data.json.")
+    else:
+        print("Nota: Archivo de cuenta de servicio no encontrado.")
+
+if __name__ == "__main__":
+    main()
