@@ -79,13 +79,25 @@ export default function CatalogPage() {
         title="Catálogo Agronómico Maestro"
         subtitle="Atlas fitosanitario y base de conocimiento técnico de los 6 cultivos estratégicos y sus 20 patologías monitoreadas por IA"
         action={
-          <Link
-            href={`/analyze?crop=${selectedCrop.id}`}
-            className="inline-flex items-center gap-2 px-5 py-2.5 text-xs font-bold text-white bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 rounded-2xl transition-all shadow-md shadow-emerald-600/25 hover:scale-[1.02] active:scale-[0.98]"
-          >
-            <ScanLine className="w-4 h-4" />
-            <span>Diagnosticar {selectedCrop.name}</span>
-          </Link>
+          <div className="flex items-center gap-2.5 flex-wrap">
+            <a
+              href="/AgroEco_Dossier_Comercial.pdf"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 px-4 py-2.5 text-xs font-bold text-slate-700 hover:text-emerald-700 bg-white hover:bg-emerald-50/50 border border-slate-200/80 rounded-2xl transition-all shadow-xs"
+              title="Descargar dossier técnico y comercial en formato PDF"
+            >
+              <FileText className="w-4 h-4 text-emerald-600" />
+              <span>Dossier PDF</span>
+            </a>
+            <Link
+              href={`/analyze?crop=${selectedCrop.id}`}
+              className="inline-flex items-center gap-2 px-5 py-2.5 text-xs font-bold text-white bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 rounded-2xl transition-all shadow-md shadow-emerald-600/25 hover:scale-[1.02] active:scale-[0.98]"
+            >
+              <ScanLine className="w-4 h-4" />
+              <span>Diagnosticar {selectedCrop.name}</span>
+            </Link>
+          </div>
         }
       />
 
