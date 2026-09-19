@@ -1,0 +1,174 @@
+{
+  "crops": {
+    "arroz": {
+      "name": "Arroz",
+      "diseases": [
+        {
+          "id": "pyricularia_arroz",
+          "name": "Pyricularia",
+          "scientificName": "Magnaporthe oryzae",
+          "affectedParts": ["leaf", "stem"],
+          "defaultSeverity": "high"
+        },
+        {
+          "id": "mancha_parda_arroz",
+          "name": "Mancha parda",
+          "scientificName": "Bipolaris oryzae",
+          "affectedParts": ["leaf", "fruit"],
+          "defaultSeverity": "moderate"
+        },
+        {
+          "id": "tizon_bacteriano_arroz",
+          "name": "Tizón bacteriano",
+          "scientificName": "Xanthomonas oryzae pv. oryzae",
+          "affectedParts": ["leaf"],
+          "defaultSeverity": "severe"
+        }
+      ]
+    },
+    "maiz": {
+      "name": "Maíz",
+      "diseases": [
+        {
+          "id": "roya_comun_maiz",
+          "name": "Roya común",
+          "scientificName": "Puccinia sorghi",
+          "affectedParts": ["leaf"],
+          "defaultSeverity": "moderate"
+        },
+        {
+          "id": "tizon_foliar_norte_maiz",
+          "name": "Tizón foliar del norte",
+          "scientificName": "Exserohilum turcicum",
+          "affectedParts": ["leaf"],
+          "defaultSeverity": "high"
+        },
+        {
+          "id": "mancha_asfalto_maiz",
+          "name": "Mancha de asfalto",
+          "scientificName": "Phyllachora maydis",
+          "affectedParts": ["leaf"],
+          "defaultSeverity": "severe"
+        }
+      ]
+    },
+    "frijol": {
+      "name": "Frijol",
+      "diseases": [
+        {
+          "id": "antracnosis_frijol",
+          "name": "Antracnosis",
+          "scientificName": "Colletotrichum lindemuthianum",
+          "affectedParts": ["leaf", "stem", "fruit"],
+          "defaultSeverity": "high"
+        },
+        {
+          "id": "roya_frijol",
+          "name": "Roya del frijol",
+          "scientificName": "Uromyces appendiculatus",
+          "affectedParts": ["leaf"],
+          "defaultSeverity": "moderate"
+        },
+        {
+          "id": "mosaico_comun_frijol",
+          "name": "Mosaico común",
+          "scientificName": "Bean common mosaic virus",
+          "affectedParts": ["leaf"],
+          "defaultSeverity": "moderate"
+        }
+      ]
+    },
+    "cafe": {
+      "name": "Café",
+      "diseases": [
+        {
+          "id": "roya_cafe",
+          "name": "Roya del café",
+          "scientificName": "Hemileia vastatrix",
+          "affectedParts": ["leaf"],
+          "defaultSeverity": "high"
+        },
+        {
+          "id": "ojo_de_gallo_cafe",
+          "name": "Ojo de gallo",
+          "scientificName": "Mycena citricolor",
+          "affectedParts": ["leaf", "fruit"],
+          "defaultSeverity": "moderate"
+        },
+        {
+          "id": "antracnosis_cafe",
+          "name": "Antracnosis",
+          "scientificName": "Colletotrichum coffeanum",
+          "affectedParts": ["fruit", "leaf", "stem"],
+          "defaultSeverity": "moderate"
+        }
+      ]
+    },
+    "tomate": {
+      "name": "Tomate",
+      "diseases": [
+        {
+          "id": "tizon_temprano_tomate",
+          "name": "Tizón temprano",
+          "scientificName": "Alternaria solani",
+          "affectedParts": ["leaf", "stem", "fruit"],
+          "defaultSeverity": "moderate"
+        },
+        {
+          "id": "tizon_tardio_tomate",
+          "name": "Tizón tardío",
+          "scientificName": "Phytophthora infestans",
+          "affectedParts": ["leaf", "fruit", "stem"],
+          "defaultSeverity": "severe"
+        },
+        {
+          "id": "oidio_tomate",
+          "name": "Oídio",
+          "scientificName": "Oidium neolycopersici",
+          "affectedParts": ["leaf", "stem"],
+          "defaultSeverity": "low"
+        }
+      ]
+    },
+    "platano": {
+      "name": "Plátano",
+      "diseases": [
+        {
+          "id": "sigatoka_negra_platano",
+          "name": "Sigatoka negra",
+          "scientificName": "Pseudocercospora fijiensis",
+          "affectedParts": ["leaf"],
+          "defaultSeverity": "high"
+        },
+        {
+          "id": "mal_de_panama_platano",
+          "name": "Mal de Panamá",
+          "scientificName": "Fusarium oxysporum f. sp. cubense",
+          "affectedParts": ["stem", "leaf"],
+          "defaultSeverity": "severe"
+        },
+        {
+          "id": "moko_platano",
+          "name": "Moko del plátano",
+          "scientificName": "Ralstonia solanacearum",
+          "affectedParts": ["stem", "fruit", "leaf"],
+          "defaultSeverity": "severe"
+        },
+        {
+          "id": "pudricion_corona_frutos_platano",
+          "name": "Pudrición de corona y frutos",
+          "scientificName": "Complejo fúngico postcosecha",
+          "affectedParts": ["fruit"],
+          "defaultSeverity": "moderate"
+        },
+        {
+          "id": "antracnosis_platano",
+          "name": "Antracnosis",
+          "scientificName": "Colletotrichum spp.",
+          "affectedParts": ["fruit"],
+          "defaultSeverity": "moderate"
+        }
+      ]
+    }
+  }
+}
