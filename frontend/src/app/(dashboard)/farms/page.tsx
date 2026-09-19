@@ -132,13 +132,13 @@ export default function FarmsPage() {
   return (
     <div className="space-y-6">
       <PageTitle
-        title="Mis Fincas"
-        subtitle="Administra tus predios agrícolas, límites y ubicación geográfica"
+        title="Mis Fincas y Predios"
+        subtitle="Administra la infraestructura territorial, geolocalización y parcelas agrícolas"
         action={
           <button
             type="button"
             onClick={openCreateModal}
-            className="inline-flex items-center gap-1.5 px-4 py-2.5 text-xs font-bold text-white bg-emerald-700 hover:bg-emerald-800 rounded-xl transition-all shadow-sm"
+            className="inline-flex items-center gap-2 px-5 py-2.5 text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-700 rounded-xl transition-all shadow-md shadow-emerald-700/20 active:scale-[0.98]"
           >
             <Plus className="w-4 h-4" />
             <span>Registrar Finca</span>
@@ -149,13 +149,13 @@ export default function FarmsPage() {
       {farms.length === 0 ? (
         <EmptyState
           title="Aún no tienes fincas registradas"
-          description="Crea tu primer predio agrícola para organizar tus parcelas y análisis fitosanitarios."
+          description="Crea tu primer predio agrícola para organizar tus parcelas y habilitar los análisis fitosanitarios por IA."
           actionText="Registrar Primera Finca"
           onAction={openCreateModal}
-          icon={<Trees className="w-7 h-7" />}
+          icon={<Trees className="w-8 h-8" />}
         />
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
           {farms.map((f) => {
             const plotCount = plots.filter((p) => p.farmId === f.id).length;
             return (
@@ -176,24 +176,29 @@ export default function FarmsPage() {
         <div
           role="dialog"
           aria-modal="true"
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-sm animate-in fade-in duration-200"
         >
-          <div className="bg-white rounded-3xl max-w-lg w-full p-6 shadow-xl border border-stone-200 max-h-[90vh] overflow-y-auto">
-            <div className="flex items-center justify-between pb-3 border-b border-stone-100 mb-4">
-              <h3 className="text-base font-bold text-stone-900">
-                {editingFarm ? 'Editar Finca' : 'Registrar Nueva Finca'}
-              </h3>
+          <div className="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-7 shadow-2xl border border-slate-200/80 max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between pb-4 border-b border-slate-100 mb-5">
+              <div>
+                <h3 className="text-base font-bold text-slate-900">
+                  {editingFarm ? 'Editar Datos del Predio' : 'Registrar Nuevo Predio'}
+                </h3>
+                <p className="text-xs text-slate-500 font-medium">
+                  Información agronómica y coordenadas base de la finca
+                </p>
+              </div>
               <button
                 type="button"
                 onClick={() => setIsModalOpen(false)}
-                className="p-1 rounded-lg text-stone-400 hover:text-stone-700"
+                className="p-2 rounded-xl text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
 
             {errorMsg && (
-              <div className="p-3 mb-4 bg-red-50 text-red-700 rounded-xl text-xs flex items-center gap-2">
+              <div className="p-3.5 mb-4 bg-rose-50 border border-rose-200 text-rose-700 rounded-2xl text-xs flex items-center gap-2">
                 <AlertCircle className="w-4 h-4 flex-shrink-0" />
                 <span>{errorMsg}</span>
               </div>
@@ -201,8 +206,8 @@ export default function FarmsPage() {
 
             <form onSubmit={handleSubmit} className="space-y-4 text-xs">
               <div>
-                <label className="block font-semibold text-stone-700 mb-1">
-                  Nombre de la Finca *
+                <label className="block font-bold text-slate-700 mb-1.5">
+                  Nombre de la Finca / Predio *
                 </label>
                 <input
                   type="text"
@@ -210,26 +215,26 @@ export default function FarmsPage() {
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                   placeholder="Ej: Finca La Esperanza"
-                  className="w-full px-3 py-2 bg-stone-50 border border-stone-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                  className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 font-medium text-slate-900"
                 />
               </div>
 
               <div>
-                <label className="block font-semibold text-stone-700 mb-1">
-                  Descripción (Opcional)
+                <label className="block font-bold text-slate-700 mb-1.5">
+                  Descripción agronómica (Opcional)
                 </label>
                 <textarea
                   rows={2}
                   value={formData.description}
                   onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                  placeholder="Cultivos principales, características de suelo..."
-                  className="w-full px-3 py-2 bg-stone-50 border border-stone-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                  placeholder="Cultivos principales, tipo de suelo, altitud..."
+                  className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 font-medium text-slate-900"
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block font-semibold text-stone-700 mb-1">
+                  <label className="block font-bold text-slate-700 mb-1.5">
                     Departamento *
                   </label>
                   <input
@@ -238,11 +243,11 @@ export default function FarmsPage() {
                     value={formData.department}
                     onChange={(e) => setFormData({ ...formData, department: e.target.value })}
                     placeholder="Ej: Quindío"
-                    className="w-full px-3 py-2 bg-stone-50 border border-stone-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                    className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 font-medium text-slate-900"
                   />
                 </div>
                 <div>
-                  <label className="block font-semibold text-stone-700 mb-1">
+                  <label className="block font-bold text-slate-700 mb-1.5">
                     Municipio *
                   </label>
                   <input
@@ -251,14 +256,14 @@ export default function FarmsPage() {
                     value={formData.municipality}
                     onChange={(e) => setFormData({ ...formData, municipality: e.target.value })}
                     placeholder="Ej: Armenia"
-                    className="w-full px-3 py-2 bg-stone-50 border border-stone-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                    className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 font-medium text-slate-900"
                   />
                 </div>
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block font-semibold text-stone-700 mb-1">
+                  <label className="block font-bold text-slate-700 mb-1.5">
                     Área Total *
                   </label>
                   <input
@@ -268,66 +273,67 @@ export default function FarmsPage() {
                     required
                     value={formData.area}
                     onChange={(e) => setFormData({ ...formData, area: parseFloat(e.target.value) || 0 })}
-                    className="w-full px-3 py-2 bg-stone-50 border border-stone-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                    className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 font-medium text-slate-900"
                   />
                 </div>
                 <div>
-                  <label className="block font-semibold text-stone-700 mb-1">
+                  <label className="block font-bold text-slate-700 mb-1.5">
                     Unidad de Medida
                   </label>
                   <select
                     value={formData.areaUnit}
                     onChange={(e) => setFormData({ ...formData, areaUnit: e.target.value as AreaUnit })}
-                    className="w-full px-3 py-2 bg-stone-50 border border-stone-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                    className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 font-medium text-slate-900"
                   >
                     <option value="ha">Hectáreas (ha)</option>
                     <option value="m2">Metros cuadrados (m²)</option>
-                    <option value="mz">Manzanas (mz)</option>
+                    <option value="fanegada">Fanegadas</option>
+                    <option value="cuadra">Cuadras</option>
                   </select>
                 </div>
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block font-semibold text-stone-700 mb-1">
-                    Latitud Referencial
+                  <label className="block font-bold text-slate-700 mb-1.5">
+                    Latitud GNSS
                   </label>
                   <input
                     type="number"
-                    step="0.0001"
+                    step="any"
                     value={formData.latitude}
                     onChange={(e) => setFormData({ ...formData, latitude: parseFloat(e.target.value) || 0 })}
-                    className="w-full px-3 py-2 bg-stone-50 border border-stone-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 font-mono"
+                    className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 font-mono text-slate-900"
                   />
                 </div>
                 <div>
-                  <label className="block font-semibold text-stone-700 mb-1">
-                    Longitud Referencial
+                  <label className="block font-bold text-slate-700 mb-1.5">
+                    Longitud GNSS
                   </label>
                   <input
                     type="number"
-                    step="0.0001"
+                    step="any"
                     value={formData.longitude}
                     onChange={(e) => setFormData({ ...formData, longitude: parseFloat(e.target.value) || 0 })}
-                    className="w-full px-3 py-2 bg-stone-50 border border-stone-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 font-mono"
+                    className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 font-mono text-slate-900"
                   />
                 </div>
               </div>
 
-              <div className="flex items-center justify-end gap-2 pt-3 border-t border-stone-100">
+              <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-100">
                 <button
                   type="button"
                   onClick={() => setIsModalOpen(false)}
-                  className="px-3.5 py-2 text-stone-600 hover:text-stone-900 rounded-xl font-medium"
+                  className="px-4 py-2.5 text-xs font-bold text-slate-600 hover:text-slate-800 transition-colors"
                 >
                   Cancelar
                 </button>
                 <button
                   type="submit"
                   disabled={submitting}
-                  className="px-4 py-2 text-white bg-emerald-700 hover:bg-emerald-800 rounded-xl font-bold transition-colors disabled:opacity-50"
+                  className="px-6 py-2.5 text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-700 rounded-xl transition-all shadow-md shadow-emerald-700/20 active:scale-[0.98] disabled:opacity-50"
                 >
-                  {submitting ? 'Guardando...' : editingFarm ? 'Actualizar Finca' : 'Crear Finca'}
+                  {submitting ? 'Guardando...' : editingFarm ? 'Guardar Cambios' : 'Crear Finca'}
                 </button>
               </div>
             </form>
@@ -335,13 +341,14 @@ export default function FarmsPage() {
         </div>
       )}
 
-      {/* Diálogo Confirmar Eliminación */}
+      {/* Dialog Confirmar Eliminación */}
       <ConfirmDialog
         isOpen={!!farmToDelete}
         title="¿Eliminar esta finca?"
-        message={`¿Estás seguro de que deseas eliminar "${farmToDelete?.name}"? Esta acción no se puede deshacer.`}
-        confirmText="Eliminar Definitivamente"
-        isDestructive={true}
+        message={`Esta acción eliminará "${farmToDelete?.name}". Se mantendrán las parcelas y diagnósticos existentes o se desasociarán según el esquema.`}
+        confirmText="Sí, Eliminar Finca"
+        cancelText="Cancelar"
+        variant="danger"
         onConfirm={handleDelete}
         onCancel={() => setFarmToDelete(null)}
       />

@@ -35,6 +35,28 @@ const config: Config = {
           900: '#4a382e',
         }
       },
+      boxShadow: {
+        'soft': '0 2px 10px -2px rgba(0, 0, 0, 0.05), 0 1px 3px -1px rgba(0, 0, 0, 0.03)',
+        'card': '0 4px 20px -2px rgba(15, 23, 42, 0.05), 0 2px 6px -1px rgba(15, 23, 42, 0.03)',
+        'card-hover': '0 12px 30px -4px rgba(5, 150, 105, 0.12), 0 4px 10px -2px rgba(15, 23, 42, 0.04)',
+        'emerald-glow': '0 0 25px -3px rgba(16, 185, 129, 0.25)',
+        'emerald-glow-lg': '0 0 40px -5px rgba(16, 185, 129, 0.35)',
+      },
+      animation: {
+        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+        'shimmer': 'shimmer 2s linear infinite',
+        'float': 'float 4s ease-in-out infinite',
+      },
+      keyframes: {
+        shimmer: {
+          '0%': { backgroundPosition: '-200% 0' },
+          '100%': { backgroundPosition: '200% 0' },
+        },
+        float: {
+          '0%, 100%': { transform: 'translateY(0)' },
+          '50%': { transform: 'translateY(-6px)' },
+        },
+      },
     },
   },
   plugins: [],

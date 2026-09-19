@@ -59,15 +59,15 @@ export function getStatusLabel(status: DiagnosisStatus): string {
 export function getStatusBadgeClasses(status: DiagnosisStatus): string {
   switch (status) {
     case 'detected':
-      return 'bg-red-100 text-red-800 border-red-200';
+      return 'bg-rose-50 text-rose-700 border-rose-200/80';
     case 'monitoring':
-      return 'bg-amber-100 text-amber-800 border-amber-200';
+      return 'bg-amber-50 text-amber-700 border-amber-200/80';
     case 'treated':
-      return 'bg-blue-100 text-blue-800 border-blue-200';
+      return 'bg-sky-50 text-sky-700 border-sky-200/80';
     case 'controlled':
-      return 'bg-emerald-100 text-emerald-800 border-emerald-200';
+      return 'bg-emerald-50 text-emerald-700 border-emerald-200/80';
     default:
-      return 'bg-gray-100 text-gray-800 border-gray-200';
+      return 'bg-slate-50 text-slate-700 border-slate-200/80';
   }
 }
 
@@ -84,14 +84,14 @@ export function getSeverityLabel(severity: SeverityLevel): string {
 export function getSeverityBadgeClasses(severity: SeverityLevel): string {
   switch (severity) {
     case 'low':
-      return 'bg-emerald-100 text-emerald-800 border-emerald-200';
+      return 'bg-emerald-50 text-emerald-700 border-emerald-200/80';
     case 'moderate':
-      return 'bg-amber-100 text-amber-800 border-amber-200';
+      return 'bg-amber-50 text-amber-700 border-amber-200/80';
     case 'high':
-      return 'bg-orange-100 text-orange-800 border-orange-200';
+      return 'bg-orange-50 text-orange-700 border-orange-200/80';
     case 'severe':
-      return 'bg-red-100 text-red-800 border-red-200';
+      return 'bg-rose-50 text-rose-700 border-rose-200/80';
     default:
-      return 'bg-gray-100 text-gray-800 border-gray-200';
+      return 'bg-slate-50 text-slate-700 border-slate-200/80';
   }
 }

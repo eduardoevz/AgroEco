@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
-import { Sparkles, LogIn, AlertCircle } from 'lucide-react';
+import { Sparkles, LogIn, AlertCircle, Mail, Lock, ArrowRight, ShieldCheck } from 'lucide-react';
 import { isDemoMode } from '@/lib/firebase/config';
 
 export default function LoginPage() {
@@ -25,18 +25,18 @@ export default function LoginPage() {
       return 'La ventana de Google se cerró antes de completar el inicio de sesión.';
     }
     if (code === 'auth/unauthorized-domain') {
-      return 'Dominio no autorizado en Firebase. Asegúrate de que "localhost" esté en Firebase Console -> Authentication -> Settings -> Authorized domains.';
+      return 'Dominio no autorizado en Firebase. Asegúrate de que tu dominio esté agregado en Firebase Console -> Authentication.';
     }
     if (code === 'auth/operation-not-allowed') {
-      return 'Este método de acceso no está habilitado en tu consola de Firebase. Activa "Email/Password" o "Google" en Authentication -> Sign-in method.';
+      return 'Este método de acceso no está habilitado en tu consola de Firebase.';
     }
     if (code === 'auth/invalid-credential' || code === 'auth/wrong-password' || code === 'auth/user-not-found') {
-      return 'Credenciales incorrectas. Verifica tu correo y contraseña o regístrate si no tienes cuenta.';
+      return 'Credenciales incorrectas. Verifica tu correo y contraseña o regístrate si aún no tienes cuenta.';
     }
     if (code === 'auth/network-request-failed') {
-      return 'Fallo de conexión con Firebase. Revisa tu conexión a internet o bloqueadores de anuncios.';
+      return 'Fallo de conexión con el servidor. Revisa tu conexión a internet.';
     }
-    return msg || 'Error al iniciar sesión. Por favor verifica tus credenciales.';
+    return msg || 'Error al iniciar sesión. Por favor verifica tus datos.';
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -76,39 +76,45 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 bg-stone-50">
-      <div className="bg-white rounded-3xl border border-stone-200 p-8 shadow-sm max-w-md w-full">
-        {/* Brand */}
+    <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-b from-[#F8FAFC] via-emerald-50/20 to-slate-100 relative overflow-hidden">
+      {/* Ambient background glows */}
+      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[600px] h-[350px] bg-emerald-100/50 blur-3xl pointer-events-none -z-10" />
+
+      <div className="bg-white/95 backdrop-blur-xl rounded-3xl border border-slate-200/80 p-7 sm:p-9 shadow-2xl shadow-emerald-950/10 max-w-md w-full relative z-10">
+        {/* Brand Header */}
         <div className="flex flex-col items-center text-center mb-6">
-          <div className="w-12 h-12 rounded-2xl bg-emerald-700 flex items-center justify-center text-white shadow-md mb-3">
-            <Sparkles className="w-6 h-6" />
-          </div>
-          <h2 className="text-2xl font-bold text-stone-900 tracking-tight">
+          <Link href="/" className="group inline-block mb-3">
+            <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-emerald-500 via-emerald-600 to-teal-700 flex items-center justify-center text-white shadow-md shadow-emerald-900/30 group-hover:scale-105 transition-transform">
+              <Sparkles className="w-6 h-6" />
+            </div>
+          </Link>
+          <h2 className="text-2xl font-extrabold text-slate-900 tracking-tight">
             Iniciar Sesión
           </h2>
-          <p className="text-xs text-stone-500 mt-1">
+          <p className="text-xs text-slate-500 mt-1 font-medium">
             Accede a tu plataforma de monitoreo fitosanitario
           </p>
           {isDemoMode && (
-            <div className="mt-2 px-3 py-1 rounded-full bg-amber-50 border border-amber-200 text-amber-800 text-[11px] font-medium">
-              Modo Demostración Activo · Acceso Inmediato
+            <div className="mt-2.5 inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200/80 text-emerald-800 text-[11px] font-bold">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+              <span>Modo Demostración Activo · Acceso Inmediato</span>
             </div>
           )}
         </div>
 
         {errorMessage && (
-          <div className="mb-4 p-3.5 bg-red-50 border border-red-200 text-red-800 rounded-2xl text-xs flex items-start gap-2.5">
-            <AlertCircle className="w-4 h-4 text-red-600 flex-shrink-0 mt-0.5" />
-            <div className="leading-relaxed">{errorMessage}</div>
+          <div className="mb-5 p-3.5 bg-rose-50 border border-rose-200 text-rose-800 rounded-2xl text-xs flex items-start gap-2.5 leading-relaxed">
+            <AlertCircle className="w-4 h-4 text-rose-600 flex-shrink-0 mt-0.5" />
+            <div>{errorMessage}</div>
           </div>
         )}
 
-        {/* Botón Iniciar con Google */}
+        {/* Botón Google */}
         <button
           type="button"
           onClick={handleGoogleSignIn}
           disabled={googleSubmitting || submitting}
-          className="w-full py-2.5 px-4 bg-white border border-stone-300 hover:bg-stone-50 text-stone-700 rounded-xl text-xs font-bold transition-all shadow-sm flex items-center justify-center gap-3 active:scale-98 disabled:opacity-50 mb-4"
+          className="w-full py-2.5 px-4 bg-white border border-slate-200 hover:bg-slate-50 hover:border-slate-300 text-slate-700 rounded-xl text-xs font-bold transition-all shadow-xs flex items-center justify-center gap-3 active:scale-98 disabled:opacity-50 mb-4"
         >
           <svg className="w-4 h-4" viewBox="0 0 24 24">
             <path
@@ -132,69 +138,75 @@ export default function LoginPage() {
         </button>
 
         {/* Separador */}
-        <div className="relative my-4">
+        <div className="relative my-5">
           <div className="absolute inset-0 flex items-center">
-            <div className="w-full border-t border-stone-200" />
+            <div className="w-full border-t border-slate-200" />
           </div>
-          <div className="relative flex justify-center text-[11px] uppercase">
-            <span className="bg-white px-2 text-stone-400 font-semibold">o con tu correo</span>
+          <div className="relative flex justify-center text-[10px] uppercase tracking-wider font-bold">
+            <span className="bg-white px-2.5 text-slate-400">o con credenciales</span>
           </div>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-xs font-semibold text-stone-700 mb-1">
+            <label className="block text-xs font-bold text-slate-700 mb-1.5">
               Correo Electrónico
             </label>
-            <input
-              type="email"
-              required
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="tu@correo.com"
-              className="w-full px-4 py-2.5 text-sm bg-stone-50 border border-stone-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition-colors"
-            />
+            <div className="relative">
+              <Mail className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+              <input
+                type="email"
+                required
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="tu@correo.com"
+                className="w-full pl-10 pr-4 py-2.5 text-sm bg-slate-50/70 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 focus:bg-white transition-all text-slate-900 placeholder:text-slate-400"
+              />
+            </div>
           </div>
 
           <div>
-            <div className="flex items-center justify-between mb-1">
-              <label className="block text-xs font-semibold text-stone-700">
+            <div className="flex items-center justify-between mb-1.5">
+              <label className="block text-xs font-bold text-slate-700">
                 Contraseña
               </label>
               <Link
                 href="/forgot-password"
-                className="text-[11px] font-medium text-emerald-700 hover:underline"
+                className="text-[11px] font-semibold text-emerald-700 hover:text-emerald-800 transition-colors"
               >
                 ¿Olvidaste tu contraseña?
               </Link>
             </div>
-            <input
-              type="password"
-              required
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="••••••••"
-              className="w-full px-4 py-2.5 text-sm bg-stone-50 border border-stone-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition-colors"
-            />
+            <div className="relative">
+              <Lock className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+              <input
+                type="password"
+                required
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="••••••••"
+                className="w-full pl-10 pr-4 py-2.5 text-sm bg-slate-50/70 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 focus:bg-white transition-all text-slate-900 placeholder:text-slate-400"
+              />
+            </div>
           </div>
 
           <button
             type="submit"
             disabled={submitting || googleSubmitting}
-            className="w-full py-3 text-sm font-bold text-white bg-emerald-700 hover:bg-emerald-800 rounded-xl transition-all shadow-md active:scale-98 disabled:opacity-50 flex items-center justify-center gap-2"
+            className="w-full py-3 text-sm font-extrabold text-white bg-gradient-to-r from-emerald-600 via-emerald-500 to-teal-600 hover:from-emerald-700 hover:to-teal-700 rounded-xl transition-all shadow-md shadow-emerald-600/30 hover:shadow-emerald-600/40 active:scale-98 disabled:opacity-50 flex items-center justify-center gap-2 mt-2"
           >
             <LogIn className="w-4 h-4" />
-            <span>{submitting ? 'Iniciando...' : 'Entrar'}</span>
+            <span>{submitting ? 'Iniciando sesión...' : 'Entrar al Panel'}</span>
           </button>
         </form>
 
-        <div className="mt-6 pt-6 border-t border-stone-100 text-center text-xs text-stone-500">
+        <div className="mt-6 pt-5 border-t border-slate-100 text-center text-xs text-slate-500">
           ¿No tienes una cuenta?{' '}
           <Link
             href="/register"
-            className="font-bold text-emerald-700 hover:underline"
+            className="font-bold text-emerald-700 hover:text-emerald-800 transition-colors"
           >
-            Regístrate como productor
+            Regístrate gratis
           </Link>
         </div>
       </div>

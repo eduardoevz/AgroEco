@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { MapPin, CheckCircle2, AlertTriangle, RefreshCw, Crosshair } from 'lucide-react';
+import { MapPin, CheckCircle2, AlertTriangle, RefreshCw, Crosshair, Navigation, Satellite } from 'lucide-react';
 
 interface Coordinates {
   latitude: number;
@@ -90,96 +90,99 @@ export const LocationCapture: React.FC<LocationCaptureProps> = ({
   };
 
   return (
-    <div className="bg-stone-50 border border-stone-200 rounded-2xl p-5 max-w-lg mx-auto space-y-4">
-      <div className="flex items-center gap-3">
+    <div className="bg-slate-50/80 border border-slate-200/80 rounded-3xl p-6 max-w-lg mx-auto space-y-5">
+      <div className="flex items-center gap-3.5">
         <div
-          className={`w-10 h-10 rounded-xl flex items-center justify-center ${
+          className={`w-12 h-12 rounded-2xl flex items-center justify-center transition-all ${
             location
-              ? 'bg-emerald-100 text-emerald-700'
-              : 'bg-stone-200 text-stone-700'
+              ? 'bg-emerald-100 text-emerald-700 shadow-sm shadow-emerald-500/10'
+              : 'bg-slate-200 text-slate-700'
           }`}
         >
-          <Crosshair className={`w-5 h-5 ${loading ? 'animate-spin' : ''}`} />
+          <Crosshair className={`w-6 h-6 ${loading ? 'animate-spin' : ''}`} />
         </div>
         <div>
-          <h4 className="text-sm font-bold text-stone-900">
-            Georreferenciación en Campo
+          <h4 className="text-sm font-bold text-slate-900">
+            Geolocalización Satelital GNSS
           </h4>
-          <p className="text-xs text-stone-500">
-            Ubicación satelital del brote fitosanitario
+          <p className="text-xs text-slate-500 font-medium">
+            Fijación de coordenadas para el mapa epidemiológico
           </p>
         </div>
       </div>
 
       {loading && (
-        <div className="p-4 bg-emerald-50/70 border border-emerald-200 rounded-xl text-center space-y-1">
-          <p className="text-xs font-semibold text-emerald-800">
-            Conectando con satélites GPS...
-          </p>
-          <p className="text-[11px] text-emerald-600">
-            Asegúrate de estar en un espacio exterior con vista al cielo.
+        <div className="p-4 bg-emerald-50/80 border border-emerald-200/70 rounded-2xl text-center space-y-1.5 animate-pulse">
+          <div className="flex items-center justify-center gap-2 text-xs font-bold text-emerald-800">
+            <Satellite className="w-4 h-4 animate-bounce text-emerald-600" />
+            <span>Sintonizando satélites GPS/GLONASS...</span>
+          </div>
+          <p className="text-[11px] text-emerald-600 font-medium">
+            Asegúrate de permitir el acceso a tu ubicación y tener vista al cielo.
           </p>
         </div>
       )}
 
       {location && !loading && (
-        <div className="p-4 bg-white border border-emerald-200 rounded-xl space-y-2">
+        <div className="p-4 bg-white border border-emerald-200/80 rounded-2xl space-y-3 shadow-sm">
           <div className="flex items-center justify-between text-xs">
-            <span className="font-semibold text-emerald-800 flex items-center gap-1.5">
+            <span className="font-bold text-emerald-800 flex items-center gap-1.5">
               <CheckCircle2 className="w-4 h-4 text-emerald-600" />
-              Coordenadas GPS fijadas
+              Coordenadas GPS fijadas con precisión
             </span>
-            <span className="text-stone-500">
-              Precisión: ±{location.accuracy}m
+            <span className="text-[11px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-100">
+              ±{location.accuracy}m
             </span>
           </div>
-          <div className="grid grid-cols-2 gap-2 text-xs font-mono bg-stone-50 p-2 rounded-lg border border-stone-100">
+
+          <div className="grid grid-cols-2 gap-2 text-xs font-mono bg-slate-50 p-3 rounded-xl border border-slate-100">
             <div>
-              <span className="text-stone-400 block text-[10px]">LATITUD</span>
-              <span className="font-semibold text-stone-800">{location.latitude}</span>
+              <span className="text-slate-400 block text-[10px] font-bold tracking-wider">LATITUD</span>
+              <span className="font-bold text-slate-800 text-sm">{location.latitude}</span>
             </div>
             <div>
-              <span className="text-stone-400 block text-[10px]">LONGITUD</span>
-              <span className="font-semibold text-stone-800">{location.longitude}</span>
+              <span className="text-slate-400 block text-[10px] font-bold tracking-wider">LONGITUD</span>
+              <span className="font-bold text-slate-800 text-sm">{location.longitude}</span>
             </div>
           </div>
+
           <button
             type="button"
             onClick={requestGeolocation}
-            className="text-[11px] text-emerald-700 hover:text-emerald-800 font-medium flex items-center gap-1 mt-1"
+            className="text-[11px] text-emerald-700 hover:text-emerald-800 font-bold flex items-center gap-1.5 mt-1 transition-colors"
           >
-            <RefreshCw className="w-3 h-3" />
-            Actualizar posición
+            <RefreshCw className="w-3.5 h-3.5" />
+            Recalibrar posición satelital
           </button>
         </div>
       )}
 
       {errorStatus && !loading && (
-        <div className="p-4 bg-amber-50 border border-amber-200 rounded-xl space-y-3">
-          <div className="flex items-start gap-2 text-xs text-amber-900">
-            <AlertTriangle className="w-4 h-4 text-amber-700 flex-shrink-0 mt-0.5" />
+        <div className="p-4 bg-amber-50/90 border border-amber-200 rounded-2xl space-y-3">
+          <div className="flex items-start gap-2.5 text-xs text-amber-900">
+            <AlertTriangle className="w-4 h-4 text-amber-600 flex-shrink-0 mt-0.5" />
             <div>
-              <span className="font-semibold">{errorStatus}</span>
-              <p className="text-[11px] text-amber-800 mt-1">
-                El diagnóstico no podrá mostrarse con ubicación exacta en el mapa si continúas sin GPS.
+              <span className="font-bold">{errorStatus}</span>
+              <p className="text-[11px] text-amber-800 mt-1 font-medium">
+                Sin coordenadas precisas, se asociará la ubicación aproximada de la finca seleccionada.
               </p>
             </div>
           </div>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 pt-1">
             <button
               type="button"
               onClick={requestGeolocation}
-              className="px-3 py-1.5 text-xs font-medium bg-amber-200 hover:bg-amber-300 text-amber-900 rounded-lg transition-colors flex items-center gap-1.5"
+              className="px-3.5 py-1.5 text-xs font-bold bg-amber-200 hover:bg-amber-300 text-amber-900 rounded-xl transition-colors flex items-center gap-1.5 shadow-sm"
             >
               <RefreshCw className="w-3.5 h-3.5" />
-              Reintentar GPS
+              Reintentar
             </button>
             <button
               type="button"
               onClick={handleSkip}
-              className="text-xs text-stone-600 hover:text-stone-900 underline"
+              className="text-xs text-slate-600 hover:text-slate-900 font-medium underline"
             >
-              Continuar sin GPS exacto
+              Continuar con coordenadas de la finca
             </button>
           </div>
         </div>
@@ -187,3 +190,4 @@ export const LocationCapture: React.FC<LocationCaptureProps> = ({
     </div>
   );
 };
+

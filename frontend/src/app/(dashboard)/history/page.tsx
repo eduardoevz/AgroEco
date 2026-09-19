@@ -78,12 +78,12 @@ export default function HistoryPage() {
   return (
     <div className="space-y-6">
       <PageTitle
-        title="Historial de Diagnósticos"
-        subtitle="Registro histórico y trazabilidad de afecciones fitosanitarias"
+        title="Expedientes y Trazabilidad"
+        subtitle="Registro histórico de afecciones, evolución temporal y medidas de contención fitosanitaria"
         action={
           <Link
             href="/analyze"
-            className="inline-flex items-center gap-1.5 px-4 py-2.5 text-xs font-bold text-white bg-emerald-700 hover:bg-emerald-800 rounded-xl transition-all shadow-sm"
+            className="inline-flex items-center gap-2 px-5 py-2.5 text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-700 rounded-xl transition-all shadow-md shadow-emerald-700/20 active:scale-[0.98]"
           >
             <ScanLine className="w-4 h-4" />
             <span>Nuevo Análisis</span>
@@ -92,17 +92,17 @@ export default function HistoryPage() {
       />
 
       {/* Barra de Búsqueda y Filtros */}
-      <div className="bg-white rounded-2xl border border-stone-200 p-4 shadow-sm space-y-3">
+      <div className="bg-white rounded-3xl border border-slate-200/80 p-5 shadow-sm space-y-4">
         <div className="flex flex-col sm:flex-row items-center gap-3">
           {/* Buscador */}
           <div className="relative flex-1 w-full">
-            <Search className="w-4 h-4 text-stone-400 absolute left-3 top-1/2 -translate-y-1/2" />
+            <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Buscar por enfermedad, cultivo o síntoma..."
-              className="w-full pl-9 pr-3 py-2 text-xs bg-stone-50 border border-stone-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500"
+              placeholder="Buscar por patología, cultivo, síntoma o predio..."
+              className="w-full pl-10 pr-4 py-2.5 text-xs bg-slate-50 border border-slate-200/80 rounded-2xl focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 font-medium text-slate-900"
             />
           </div>
 
@@ -110,24 +110,58 @@ export default function HistoryPage() {
           <button
             type="button"
             onClick={() => setSortOrder(sortOrder === 'desc' ? 'asc' : 'desc')}
-            className="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-medium text-stone-700 bg-stone-50 border border-stone-200 hover:bg-stone-100 rounded-xl transition-colors w-full sm:w-auto justify-center"
+            className="inline-flex items-center gap-2 px-4 py-2.5 text-xs font-bold text-slate-700 bg-slate-50 border border-slate-200/80 hover:bg-slate-100 rounded-2xl transition-all w-full sm:w-auto justify-center"
           >
-            <ArrowUpDown className="w-3.5 h-3.5 text-stone-500" />
+            <ArrowUpDown className="w-3.5 h-3.5 text-slate-500" />
             <span>{sortOrder === 'desc' ? 'Más recientes' : 'Más antiguos'}</span>
           </button>
         </div>
 
-        {/* Filtros desplegables */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 pt-1 text-xs">
+        {/* Segmented Status Pills */}
+        <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none text-xs">
+          {[
+            { id: '', label: 'Todos', count: diagnoses.length },
+            { id: 'detected', label: 'Detectados', count: diagnoses.filter((d) => d.status === 'detected').length },
+            { id: 'monitoring', label: 'En seguimiento', count: diagnoses.filter((d) => d.status === 'monitoring').length },
+            { id: 'treated', label: 'Tratados', count: diagnoses.filter((d) => d.status === 'treated').length },
+            { id: 'controlled', label: 'Controlados', count: diagnoses.filter((d) => d.status === 'controlled').length },
+          ].map((tab) => {
+            const isActive = statusFilter === tab.id;
+            return (
+              <button
+                key={tab.id}
+                type="button"
+                onClick={() => setStatusFilter(tab.id)}
+                className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full font-bold text-xs transition-all whitespace-nowrap ${
+                  isActive
+                    ? 'bg-slate-900 text-white shadow-sm'
+                    : 'bg-slate-100 text-slate-600 hover:bg-slate-200/80'
+                }`}
+              >
+                <span>{tab.label}</span>
+                <span
+                  className={`text-[10px] px-1.5 py-0.2 rounded-full ${
+                    isActive ? 'bg-white/20 text-white' : 'bg-white text-slate-500 border border-slate-200'
+                  }`}
+                >
+                  {tab.count}
+                </span>
+              </button>
+            );
+          })}
+        </div>
+
+        {/* Filtros desplegables adicionales */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1 text-xs">
           <select
             value={farmFilter}
             onChange={(e) => setFarmFilter(e.target.value)}
-            className="px-3 py-2 bg-stone-50 border border-stone-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500"
+            className="px-3.5 py-2.5 bg-slate-50 border border-slate-200/80 rounded-2xl focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 font-medium text-slate-700"
           >
             <option value="">Todas las fincas</option>
             {farms.map((f) => (
               <option key={f.id} value={f.id}>
-                {f.name}
+                {f.name} ({f.municipality})
               </option>
             ))}
           </select>
@@ -135,7 +169,7 @@ export default function HistoryPage() {
           <select
             value={cropFilter}
             onChange={(e) => setCropFilter(e.target.value)}
-            className="px-3 py-2 bg-stone-50 border border-stone-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500"
+            className="px-3.5 py-2.5 bg-slate-50 border border-slate-200/80 rounded-2xl focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 font-medium text-slate-700"
           >
             <option value="">Todos los cultivos</option>
             {crops.map((c) => (
@@ -143,18 +177,6 @@ export default function HistoryPage() {
                 {c.name}
               </option>
             ))}
-          </select>
-
-          <select
-            value={statusFilter}
-            onChange={(e) => setStatusFilter(e.target.value)}
-            className="px-3 py-2 bg-stone-50 border border-stone-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500"
-          >
-            <option value="">Todos los estados</option>
-            <option value="detected">Detectado</option>
-            <option value="monitoring">En seguimiento</option>
-            <option value="treated">Tratado</option>
-            <option value="controlled">Controlado</option>
           </select>
         </div>
       </div>
@@ -165,11 +187,11 @@ export default function HistoryPage() {
           title="No se encontraron diagnósticos"
           description={
             diagnoses.length === 0
-              ? 'Aún no has registrado ningún diagnóstico en la plataforma.'
-              : 'Ningún diagnóstico coincide con los criterios de búsqueda aplicados.'
+              ? 'Aún no has registrado ningún diagnóstico fitosanitario en la plataforma.'
+              : 'Ningún expediente coincide con los criterios o filtros seleccionados.'
           }
-          icon={<HistoryIcon className="w-7 h-7" />}
-          actionText={diagnoses.length === 0 ? 'Iniciar Análisis' : 'Limpiar Filtros'}
+          icon={<HistoryIcon className="w-8 h-8" />}
+          actionText={diagnoses.length === 0 ? 'Iniciar Primer Análisis' : 'Restablecer Filtros'}
           onAction={() => {
             if (diagnoses.length === 0) {
               window.location.href = '/analyze';
@@ -183,9 +205,9 @@ export default function HistoryPage() {
         />
       ) : (
         <div className="space-y-3">
-          <div className="flex items-center justify-between text-xs text-stone-500 px-1">
+          <div className="flex items-center justify-between text-xs text-slate-500 px-1 font-medium">
             <span>
-              Mostrando <strong>{filtered.length}</strong> registro{filtered.length === 1 ? '' : 's'}
+              Mostrando <strong className="text-slate-800 font-bold">{filtered.length}</strong> expediente{filtered.length === 1 ? '' : 's'}
             </span>
           </div>
 
@@ -203,3 +225,4 @@ export default function HistoryPage() {
     </div>
   );
 }
+

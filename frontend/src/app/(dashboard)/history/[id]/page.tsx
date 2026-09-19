@@ -92,47 +92,49 @@ export default function DiagnosisDetailPage() {
 
   return (
     <div className="space-y-6 max-w-4xl mx-auto">
-      {/* Botón Volver */}
+      {/* Botón Volver y Accesos Rápidos */}
       <div className="flex items-center justify-between">
         <Link
           href="/history"
-          className="inline-flex items-center gap-1 text-xs font-semibold text-stone-500 hover:text-stone-800"
+          className="inline-flex items-center gap-1.5 text-xs font-bold text-slate-500 hover:text-slate-800 transition-colors"
         >
           <ArrowLeft className="w-4 h-4" />
           <span>Volver al Historial</span>
         </Link>
         <Link
           href={`/map?diagnosisId=${diagnosis.id}&farmId=${diagnosis.farmId}`}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-emerald-700 hover:text-emerald-800 bg-emerald-50 hover:bg-emerald-100 rounded-xl transition-colors"
+          className="inline-flex items-center gap-2 px-4 py-2 text-xs font-bold text-emerald-700 bg-emerald-50 hover:bg-emerald-100 rounded-xl border border-emerald-200/60 transition-all shadow-sm"
         >
           <Map className="w-4 h-4" />
           <span>Ver este brote en el mapa</span>
         </Link>
       </div>
 
-      {/* Advertencia Legal Obligatoria */}
+      {/* Advertencia Legal */}
       <div
         role="alert"
-        className="bg-amber-50 border-l-4 border-amber-500 p-4 rounded-r-2xl text-amber-900 shadow-sm text-xs space-y-1"
+        className="bg-amber-50/90 border border-amber-200 p-4 rounded-2xl text-amber-950 shadow-sm text-xs"
       >
         <div className="flex items-start gap-3">
-          <AlertTriangle className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" />
+          <div className="p-1.5 rounded-xl bg-amber-100 text-amber-700 flex-shrink-0">
+            <AlertTriangle className="w-4 h-4" />
+          </div>
           <div>
-            <p className="font-bold text-sm">
-              Diagnóstico preliminar asistido por inteligencia artificial
+            <p className="font-bold text-slate-900">
+              Expediente Fitosanitario Asistido por Inteligencia Artificial
             </p>
-            <p className="leading-relaxed">
-              Este resultado es una estimación generada mediante inteligencia artificial y no sustituye la evaluación de un profesional agrícola.
+            <p className="text-amber-800 leading-relaxed font-medium mt-0.5">
+              Este resultado es una estimación generada mediante modelos de visión por computador y no sustituye la evaluación agronómica presencial certificada.
             </p>
           </div>
         </div>
       </div>
 
       {/* Tarjeta Superior: Foto + Datos Centrales */}
-      <div className="bg-white rounded-3xl border border-stone-200 shadow-sm overflow-hidden">
+      <div className="bg-white rounded-3xl border border-slate-200/80 shadow-sm overflow-hidden">
         <div className="grid grid-cols-1 md:grid-cols-2">
           {/* Fotografía de la muestra */}
-          <div className="relative aspect-square md:aspect-auto bg-stone-900 overflow-hidden flex items-center justify-center">
+          <div className="relative aspect-square md:aspect-auto bg-slate-950 overflow-hidden flex items-center justify-center">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={diagnosis.imageUrl}
@@ -142,40 +144,44 @@ export default function DiagnosisDetailPage() {
             <div className="absolute top-4 left-4">
               <DiagnosisStatusBadge status={diagnosis.status} />
             </div>
+            <div className="absolute bottom-4 left-4 right-4 px-3 py-1.5 rounded-xl bg-black/60 backdrop-blur-md text-white text-[11px] font-mono flex items-center justify-between">
+              <span>{crop?.name || diagnosis.cropId}</span>
+              <span className="text-emerald-400 font-bold">{getPlantPartLabel(diagnosis.plantPart)}</span>
+            </div>
           </div>
 
           {/* Información Técnica */}
-          <div className="p-6 flex flex-col justify-between space-y-4">
+          <div className="p-6 sm:p-7 flex flex-col justify-between space-y-5">
             <div>
-              <span className="text-[11px] uppercase tracking-wider font-bold text-emerald-700 block">
-                {crop?.name || diagnosis.cropId} · Órgano: {getPlantPartLabel(diagnosis.plantPart)}
+              <span className="text-[10px] uppercase tracking-wider font-bold text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-md border border-emerald-200/60 inline-block mb-2">
+                {crop?.name || diagnosis.cropId} · {getPlantPartLabel(diagnosis.plantPart)}
               </span>
-              <h2 className="text-xl sm:text-2xl font-bold text-stone-900 tracking-tight mt-1">
+              <h2 className="text-2xl font-extrabold text-slate-900 tracking-tight">
                 {diagnosis.predictedDiseaseName}
               </h2>
               {disease?.scientificName && (
-                <p className="text-xs text-stone-500 italic mt-0.5">
+                <p className="text-xs text-slate-500 italic mt-0.5 font-mono">
                   {disease.scientificName}
                 </p>
               )}
             </div>
 
             <div className="grid grid-cols-2 gap-3 text-xs">
-              <div className="p-3 bg-stone-50 rounded-xl border border-stone-100">
-                <span className="text-[10px] uppercase font-bold text-stone-400 block">
+              <div className="p-3.5 bg-slate-50 rounded-2xl border border-slate-200/70">
+                <span className="text-[10px] uppercase font-bold text-slate-400 block tracking-wider">
                   Certeza IA
                 </span>
-                <span className="text-base font-bold text-emerald-700">
+                <span className="text-lg font-extrabold text-emerald-700">
                   {formatPercent(diagnosis.confidence)}
                 </span>
               </div>
 
-              <div className="p-3 bg-stone-50 rounded-xl border border-stone-100">
-                <span className="text-[10px] uppercase font-bold text-stone-400 block">
+              <div className="p-3.5 bg-slate-50 rounded-2xl border border-slate-200/70">
+                <span className="text-[10px] uppercase font-bold text-slate-400 block tracking-wider">
                   Severidad
                 </span>
                 <span
-                  className={`inline-block px-2 py-0.5 text-xs font-semibold rounded-md mt-0.5 ${getSeverityBadgeClasses(
+                  className={`inline-block px-2 py-0.5 text-xs font-bold rounded-lg mt-0.5 ${getSeverityBadgeClasses(
                     diagnosis.severity
                   )}`}
                 >
@@ -183,32 +189,32 @@ export default function DiagnosisDetailPage() {
                 </span>
               </div>
 
-              <div className="p-3 bg-stone-50 rounded-xl border border-stone-100">
-                <span className="text-[10px] uppercase font-bold text-stone-400 block">
+              <div className="p-3.5 bg-slate-50 rounded-2xl border border-slate-200/70">
+                <span className="text-[10px] uppercase font-bold text-slate-400 block tracking-wider">
                   Fecha Detección
                 </span>
-                <span className="font-semibold text-stone-700">
+                <span className="font-bold text-slate-800 block mt-0.5">
                   {formatDate(diagnosis.createdAt)}
                 </span>
               </div>
 
-              <div className="p-3 bg-stone-50 rounded-xl border border-stone-100">
-                <span className="text-[10px] uppercase font-bold text-stone-400 block">
+              <div className="p-3.5 bg-slate-50 rounded-2xl border border-slate-200/70">
+                <span className="text-[10px] uppercase font-bold text-slate-400 block tracking-wider">
                   Modelo Visión
                 </span>
-                <span className="font-mono text-stone-600">
+                <span className="font-mono text-slate-700 font-bold text-[11px] block mt-0.5 truncate">
                   {diagnosis.aiModelVersion}
                 </span>
               </div>
             </div>
 
             {/* Finca y Coordenadas */}
-            <div className="p-3 bg-stone-50 rounded-xl border border-stone-100 text-xs space-y-1">
-              <div className="flex items-center gap-1.5 font-semibold text-stone-800">
-                <MapPin className="w-4 h-4 text-emerald-700" />
+            <div className="p-3.5 bg-slate-50 rounded-2xl border border-slate-200/70 text-xs space-y-1">
+              <div className="flex items-center gap-1.5 font-bold text-slate-900">
+                <MapPin className="w-4 h-4 text-emerald-600" />
                 <span>{farm?.name || 'Finca registrada'}</span>
               </div>
-              <p className="text-[11px] font-mono text-stone-500">
+              <p className="text-[11px] font-mono text-slate-500 font-medium">
                 Lat: {diagnosis.latitude.toFixed(6)}, Lon: {diagnosis.longitude.toFixed(6)} (±{diagnosis.gpsAccuracy}m)
               </p>
             </div>
@@ -216,14 +222,14 @@ export default function DiagnosisDetailPage() {
         </div>
 
         {/* Sección de Conocimiento Agronómico */}
-        <div className="p-6 border-t border-stone-100 space-y-6">
+        <div className="p-6 sm:p-7 border-t border-slate-100 space-y-6">
           {disease?.description && (
             <div>
-              <h4 className="text-xs font-bold text-stone-900 uppercase tracking-wider mb-2 flex items-center gap-1.5">
-                <BookOpen className="w-4 h-4 text-emerald-700" />
-                Descripción Patológica
+              <h4 className="text-xs font-bold text-slate-900 uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                <BookOpen className="w-4 h-4 text-emerald-600" />
+                <span>Descripción Fitosanitaria</span>
               </h4>
-              <p className="text-xs text-stone-600 leading-relaxed bg-stone-50 p-3.5 rounded-xl border border-stone-100">
+              <p className="text-xs text-slate-600 leading-relaxed bg-slate-50 p-4 rounded-2xl border border-slate-200/80 font-normal">
                 {disease.description}
               </p>
             </div>
@@ -231,15 +237,15 @@ export default function DiagnosisDetailPage() {
 
           {disease?.symptoms && disease.symptoms.length > 0 && (
             <div>
-              <h4 className="text-xs font-bold text-stone-900 uppercase tracking-wider mb-2 flex items-center gap-1.5">
+              <h4 className="text-xs font-bold text-slate-900 uppercase tracking-wider mb-2 flex items-center gap-1.5">
                 <ShieldAlert className="w-4 h-4 text-amber-600" />
-                Síntomas Observables en Campo
+                <span>Síntomas Observables en Campo</span>
               </h4>
-              <ul className="space-y-1.5">
+              <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                 {disease.symptoms.map((s, idx) => (
                   <li
                     key={idx}
-                    className="text-xs text-stone-700 flex items-start gap-2 bg-stone-50 p-2.5 rounded-xl border border-stone-100"
+                    className="text-xs text-slate-700 flex items-start gap-2 bg-slate-50 p-3 rounded-2xl border border-slate-200/80 font-medium"
                   >
                     <span className="w-1.5 h-1.5 rounded-full bg-amber-500 mt-1.5 flex-shrink-0" />
                     <span>{s}</span>
@@ -251,35 +257,35 @@ export default function DiagnosisDetailPage() {
 
           {disease?.recommendations && disease.recommendations.length > 0 && (
             <div>
-              <h4 className="text-xs font-bold text-stone-900 uppercase tracking-wider mb-2 flex items-center gap-1.5">
-                <CheckCircle2 className="w-4 h-4 text-emerald-700" />
-                Recomendaciones Iniciales de Manejo Integrado
+              <h4 className="text-xs font-bold text-slate-900 uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+                <span>Recomendaciones Iniciales de Manejo Integrado</span>
               </h4>
-              <ul className="space-y-1.5">
+              <ul className="space-y-2">
                 {disease.recommendations.map((r, idx) => (
                   <li
                     key={idx}
-                    className="text-xs text-stone-700 flex items-start gap-2 bg-emerald-50/60 p-2.5 rounded-xl border border-emerald-100"
+                    className="text-xs text-slate-800 flex items-start gap-2.5 bg-emerald-50/60 p-3.5 rounded-2xl border border-emerald-200/60 font-medium"
                   >
-                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-700 flex-shrink-0 mt-0.5" />
-                    <span>{r}</span>
+                    <CheckCircle2 className="w-4 h-4 text-emerald-600 flex-shrink-0 mt-0.5" />
+                    <span className="leading-relaxed">{r}</span>
                   </li>
                 ))}
               </ul>
             </div>
           )}
 
-          <div className="flex items-center gap-2 p-3 bg-stone-100 rounded-xl text-[11px] text-stone-500">
-            <Info className="w-4 h-4 flex-shrink-0" />
+          <div className="flex items-center gap-2.5 p-3.5 bg-slate-100 rounded-2xl text-[11px] text-slate-500 font-medium">
+            <Info className="w-4 h-4 flex-shrink-0 text-slate-400" />
             <span>
-              La información presentada sirve como apoyo y deberá complementarse con evaluación técnica cuando el caso lo requiera.
+              La información técnica presentada sirve como apoyo preliminar y deberá complementarse con evaluación de campo por un agrónomo colegiado.
             </span>
           </div>
         </div>
       </div>
 
       {/* Línea de Tiempo y Seguimiento */}
-      <div className="bg-white rounded-3xl border border-stone-200 p-6 shadow-sm">
+      <div className="bg-white rounded-3xl border border-slate-200/80 p-6 sm:p-7 shadow-sm">
         <DiagnosisTimeline
           diagnosisId={diagnosis.id}
           currentStatus={diagnosis.status}
@@ -293,3 +299,4 @@ export default function DiagnosisDetailPage() {
     </div>
   );
 }
+

@@ -12,7 +12,6 @@ import {
 } from '@/lib/firebase/firestore';
 import { DashboardMetrics, Diagnosis, Farm, Plot, Crop } from '@/types';
 import { MetricCard } from '@/components/dashboard/MetricCard';
-import { PageTitle } from '@/components/layout/PageTitle';
 import { DiagnosisCard } from '@/components/diagnosis/DiagnosisCard';
 import { DashboardCharts } from '@/components/dashboard/Charts';
 import { LoadingState } from '@/components/ui/LoadingState';
@@ -27,6 +26,11 @@ import {
   ShieldCheck,
   CheckCircle2,
   ArrowRight,
+  Sparkles,
+  Layers,
+  Calendar,
+  ChevronRight,
+  ShieldAlert,
 } from 'lucide-react';
 
 export default function DashboardPage() {
@@ -64,27 +68,77 @@ export default function DashboardPage() {
   }, [user]);
 
   if (loading) {
-    return <LoadingState message="Cargando métricas de salud agronómica..." />;
+    return <LoadingState message="Cargando telemetría fitosanitaria de tus cultivos..." />;
   }
 
-  const recentDiagnoses = diagnoses.slice(0, 4);
+  const recentDiagnoses = diagnoses.slice(0, 5);
 
   return (
     <div className="space-y-8">
-      {/* Cabecera con bienvenida */}
-      <PageTitle
-        title={`Bienvenido, ${user?.name || 'Productor'}`}
-        subtitle="Monitoreo fitosanitario en tiempo real de tus parcelas y fincas"
-        action={
-          <Link
-            href="/analyze"
-            className="inline-flex items-center gap-2 px-4 py-2.5 text-xs font-bold text-white bg-emerald-700 hover:bg-emerald-800 rounded-xl transition-all shadow-sm"
-          >
-            <ScanLine className="w-4 h-4" />
-            <span>Nuevo Análisis</span>
-          </Link>
-        }
-      />
+      {/* Hero Banner Ejecutivo de Sanidad Vegetal */}
+      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-emerald-950 via-slate-900 to-slate-950 p-6 sm:p-8 text-white border border-emerald-800/40 shadow-xl">
+        {/* Glows ambientales */}
+        <div className="absolute -right-16 -top-16 w-64 h-64 bg-emerald-500/15 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute -left-16 -bottom-16 w-64 h-64 bg-teal-500/10 rounded-full blur-3xl pointer-events-none" />
+
+        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
+          <div className="space-y-2 max-w-xl">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 text-[11px] font-semibold">
+              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+              <span>Plataforma de Diagnóstico IA Activa · Gemini 3.6 & MobileNet</span>
+            </div>
+            <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white">
+              Panel Agroecológico de {user?.name || 'Productor'}
+            </h1>
+            <p className="text-xs sm:text-sm text-slate-300 leading-relaxed font-normal">
+              Vigilancia fitosanitaria continua, detección temprana de plagas y trazabilidad georreferenciada de parcelas.
+            </p>
+          </div>
+
+          <div className="flex flex-wrap items-center gap-3">
+            <Link
+              href="/analyze"
+              className="inline-flex items-center gap-2.5 px-5 py-3 text-xs font-bold text-slate-950 bg-gradient-to-r from-emerald-400 to-teal-300 hover:from-emerald-300 hover:to-teal-200 rounded-2xl transition-all shadow-lg shadow-emerald-500/20 active:scale-[0.98]"
+            >
+              <ScanLine className="w-4 h-4 text-emerald-950" />
+              <span>Nuevo Escaneo IA</span>
+            </Link>
+            <Link
+              href="/map"
+              className="inline-flex items-center gap-2 px-4 py-3 text-xs font-semibold text-white bg-white/10 hover:bg-white/15 border border-white/15 rounded-2xl transition-all backdrop-blur-sm"
+            >
+              <MapPin className="w-4 h-4 text-emerald-300" />
+              <span>Explorar Mapa</span>
+            </Link>
+          </div>
+        </div>
+
+        {/* Barra de telemetría inferior del banner */}
+        <div className="relative z-10 grid grid-cols-2 sm:grid-cols-4 gap-4 pt-6 mt-6 border-t border-white/10 text-xs">
+          <div>
+            <span className="text-slate-400 block text-[11px]">Fincas Registradas</span>
+            <strong className="text-white text-base font-bold">{farms.length} activas</strong>
+          </div>
+          <div>
+            <span className="text-slate-400 block text-[11px]">Parcelas Monitoreadas</span>
+            <strong className="text-white text-base font-bold">{plots.length} lotes</strong>
+          </div>
+          <div>
+            <span className="text-slate-400 block text-[11px]">Cultivos en Catálogo</span>
+            <strong className="text-white text-base font-bold">{crops.length} especies</strong>
+          </div>
+          <div>
+            <span className="text-slate-400 block text-[11px]">Índice de Control</span>
+            <strong className="text-emerald-400 text-base font-bold">
+              {diagnoses.length > 0
+                ? `${Math.round(
+                    ((metrics?.controlledCount || 0) / diagnoses.length) * 100
+                  )}% resuelto`
+                : '100% óptimo'}
+            </strong>
+          </div>
+        </div>
+      </div>
 
       {/* Tarjetas de Métricas Principales */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
@@ -94,126 +148,156 @@ export default function DashboardPage() {
           subtitle={`${metrics?.farmsCount || 0} fincas activas`}
           icon={ScanLine}
           variant="default"
+          trend={{ value: `${diagnoses.length} reg.`, direction: 'up' }}
         />
         <MetricCard
           title="Casos Detectados"
           value={metrics?.detectedCount || 0}
-          subtitle="Requieren inspección"
+          subtitle="Requieren acción inmediata"
           icon={AlertTriangle}
           variant="danger"
+          trend={{ value: 'Prioridad alta', direction: 'up' }}
         />
         <MetricCard
           title="En Seguimiento"
           value={metrics?.monitoringCount || 0}
-          subtitle="Bajo observación"
+          subtitle="Bajo evaluación agronómica"
           icon={Clock}
           variant="warning"
+          trend={{ value: 'En proceso', direction: 'neutral' }}
         />
         <MetricCard
-          title="Controlados"
+          title="Casos Controlados"
           value={metrics?.controlledCount || 0}
-          subtitle="Casos superados"
+          subtitle="Brotes superados con éxito"
           icon={ShieldCheck}
           variant="success"
+          trend={{ value: 'Efectivo', direction: 'down' }}
         />
       </div>
 
-      {/* Acciones Rápidas */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-        <Link
-          href="/analyze"
-          className="p-4 bg-emerald-800 text-white rounded-2xl shadow-sm hover:bg-emerald-900 transition-all flex flex-col justify-between group"
-        >
-          <div className="w-9 h-9 rounded-xl bg-white/10 flex items-center justify-center mb-3">
-            <ScanLine className="w-5 h-5 text-white" />
-          </div>
-          <div>
-            <span className="text-xs font-bold block">Analizar Planta</span>
-            <span className="text-[11px] text-emerald-200">Tomar o subir foto</span>
-          </div>
-        </Link>
+      {/* Acciones Rápidas Bento Grid */}
+      <div>
+        <div className="flex items-center justify-between mb-3">
+          <h3 className="text-xs font-bold text-slate-800 uppercase tracking-wider">
+            Accesos Rápidos del Productor
+          </h3>
+        </div>
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+          <Link
+            href="/analyze"
+            className="p-5 bg-gradient-to-br from-emerald-800 to-emerald-950 text-white rounded-2xl shadow-sm hover:shadow-card-hover hover:-translate-y-0.5 transition-all duration-200 flex flex-col justify-between group border border-emerald-700/50"
+          >
+            <div className="w-10 h-10 rounded-xl bg-white/15 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+              <ScanLine className="w-5 h-5 text-emerald-200" />
+            </div>
+            <div>
+              <span className="text-sm font-bold block mb-0.5">Analizar Planta</span>
+              <span className="text-[11px] text-emerald-200/80 font-medium">
+                Cámara o imagen con IA
+              </span>
+            </div>
+          </Link>
 
-        <Link
-          href="/map"
-          className="p-4 bg-white border border-stone-200 rounded-2xl shadow-sm hover:border-emerald-300 hover:shadow-md transition-all flex flex-col justify-between group"
-        >
-          <div className="w-9 h-9 rounded-xl bg-amber-50 text-amber-700 flex items-center justify-center mb-3">
-            <MapPin className="w-5 h-5" />
-          </div>
-          <div>
-            <span className="text-xs font-bold text-stone-900 block group-hover:text-emerald-700 transition-colors">
-              Ver Mapa
-            </span>
-            <span className="text-[11px] text-stone-500">Brotes georreferenciados</span>
-          </div>
-        </Link>
+          <Link
+            href="/map"
+            className="p-5 bg-white border border-slate-200/80 rounded-2xl shadow-sm hover:shadow-card-hover hover:border-emerald-300 hover:-translate-y-0.5 transition-all duration-200 flex flex-col justify-between group"
+          >
+            <div className="w-10 h-10 rounded-xl bg-amber-50 text-amber-600 border border-amber-100 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+              <MapPin className="w-5 h-5" />
+            </div>
+            <div>
+              <span className="text-sm font-bold text-slate-900 block mb-0.5 group-hover:text-emerald-700 transition-colors">
+                Mapa Epidemiológico
+              </span>
+              <span className="text-[11px] text-slate-500 font-medium">
+                Brotes georreferenciados
+              </span>
+            </div>
+          </Link>
 
-        <Link
-          href="/farms"
-          className="p-4 bg-white border border-stone-200 rounded-2xl shadow-sm hover:border-emerald-300 hover:shadow-md transition-all flex flex-col justify-between group"
-        >
-          <div className="w-9 h-9 rounded-xl bg-emerald-50 text-emerald-700 flex items-center justify-center mb-3">
-            <Trees className="w-5 h-5" />
-          </div>
-          <div>
-            <span className="text-xs font-bold text-stone-900 block group-hover:text-emerald-700 transition-colors">
-              Mis Fincas
-            </span>
-            <span className="text-[11px] text-stone-500">
-              {farms.length} registradas
-            </span>
-          </div>
-        </Link>
+          <Link
+            href="/farms"
+            className="p-5 bg-white border border-slate-200/80 rounded-2xl shadow-sm hover:shadow-card-hover hover:border-emerald-300 hover:-translate-y-0.5 transition-all duration-200 flex flex-col justify-between group"
+          >
+            <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 border border-emerald-100 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+              <Trees className="w-5 h-5" />
+            </div>
+            <div>
+              <span className="text-sm font-bold text-slate-900 block mb-0.5 group-hover:text-emerald-700 transition-colors">
+                Gestión de Fincas
+              </span>
+              <span className="text-[11px] text-slate-500 font-medium">
+                {farms.length} predios registrados
+              </span>
+            </div>
+          </Link>
 
-        <Link
-          href="/history"
-          className="p-4 bg-white border border-stone-200 rounded-2xl shadow-sm hover:border-emerald-300 hover:shadow-md transition-all flex flex-col justify-between group"
-        >
-          <div className="w-9 h-9 rounded-xl bg-blue-50 text-blue-700 flex items-center justify-center mb-3">
-            <History className="w-5 h-5" />
-          </div>
-          <div>
-            <span className="text-xs font-bold text-stone-900 block group-hover:text-emerald-700 transition-colors">
-              Historial
-            </span>
-            <span className="text-[11px] text-stone-500">Trazabilidad completa</span>
-          </div>
-        </Link>
+          <Link
+            href="/history"
+            className="p-5 bg-white border border-slate-200/80 rounded-2xl shadow-sm hover:shadow-card-hover hover:border-emerald-300 hover:-translate-y-0.5 transition-all duration-200 flex flex-col justify-between group"
+          >
+            <div className="w-10 h-10 rounded-xl bg-sky-50 text-sky-600 border border-sky-100 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+              <History className="w-5 h-5" />
+            </div>
+            <div>
+              <span className="text-sm font-bold text-slate-900 block mb-0.5 group-hover:text-emerald-700 transition-colors">
+                Expedientes Clínicos
+              </span>
+              <span className="text-[11px] text-slate-500 font-medium">
+                Trazabilidad fitosanitaria
+              </span>
+            </div>
+          </Link>
+        </div>
       </div>
 
       {/* Gráficos Analíticos */}
       <section>
-        <div className="flex items-center justify-between mb-4">
-          <h3 className="text-sm font-bold text-stone-900 uppercase tracking-wider">
-            Analítica de Sanidad Vegetal
-          </h3>
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4">
+          <div>
+            <h3 className="text-xs font-bold text-slate-900 uppercase tracking-wider">
+              Analítica de Sanidad Vegetal
+            </h3>
+            <p className="text-[11px] text-slate-500">
+              Métricas agregadas y patrones epidemiológicos observados
+            </p>
+          </div>
           {metrics?.mostFrequentDisease && (
-            <span className="text-xs text-stone-500">
-              Mayor prevalencia: <strong className="text-stone-800">{metrics.mostFrequentDisease}</strong>
-            </span>
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-amber-50 border border-amber-200/70 rounded-full text-xs text-amber-900">
+              <ShieldAlert className="w-3.5 h-3.5 text-amber-600" />
+              <span>
+                Mayor prevalencia: <strong className="font-bold">{metrics.mostFrequentDisease}</strong>
+              </span>
+            </div>
           )}
         </div>
         <DashboardCharts diagnoses={diagnoses} />
       </section>
 
-      {/* Últimos Diagnósticos */}
+      {/* Últimos Diagnósticos Registrados */}
       <section>
         <div className="flex items-center justify-between mb-4">
-          <h3 className="text-sm font-bold text-stone-900 uppercase tracking-wider">
-            Últimos Diagnósticos Registrados
-          </h3>
+          <div>
+            <h3 className="text-xs font-bold text-slate-900 uppercase tracking-wider">
+              Últimos Diagnósticos Registrados
+            </h3>
+            <p className="text-[11px] text-slate-500">
+              Casos recientes evaluados en campo
+            </p>
+          </div>
           <Link
             href="/history"
-            className="inline-flex items-center gap-1 text-xs font-semibold text-emerald-700 hover:text-emerald-800"
+            className="inline-flex items-center gap-1.5 text-xs font-bold text-emerald-700 hover:text-emerald-800 bg-emerald-50 hover:bg-emerald-100/80 px-3 py-1.5 rounded-xl transition-colors"
           >
-            <span>Ver todos</span>
+            <span>Ver historial completo ({diagnoses.length})</span>
             <ArrowRight className="w-3.5 h-3.5" />
           </Link>
         </div>
 
         {recentDiagnoses.length === 0 ? (
           <EmptyState
-            title="Sin diagnósticos registrados"
+            title="Sin diagnósticos registrados aún"
             description="Inicia tu primer análisis fotográfico asistido por IA para monitorear la salud de tus cultivos."
             actionText="Realizar Primer Análisis"
             onAction={() => (window.location.href = '/analyze')}
@@ -235,3 +319,4 @@ export default function DashboardPage() {
     </div>
   );
 }
+

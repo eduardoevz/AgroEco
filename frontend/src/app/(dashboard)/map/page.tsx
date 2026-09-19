@@ -119,40 +119,51 @@ function MapContent() {
   });
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-6">
       <PageTitle
-        title="Mapa Georreferenciado de Brotes"
-        subtitle="Visualización espacial satelital de diagnósticos, focos y severidad fitosanitaria"
+        title="Mapa Epidemiológico de Brotes"
+        subtitle="Vigilancia espacial satelital de diagnósticos, focos activos y severidad fitosanitaria"
         action={
           <Link
             href="/analyze"
-            className="inline-flex items-center gap-1.5 px-4 py-2.5 text-xs font-bold text-white bg-emerald-700 hover:bg-emerald-800 rounded-xl transition-all shadow-sm"
+            className="inline-flex items-center gap-2 px-5 py-2.5 text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-700 rounded-xl transition-all shadow-md shadow-emerald-700/20 active:scale-[0.98]"
           >
             <ScanLine className="w-4 h-4" />
-            <span>Nuevo Análisis</span>
+            <span>Nuevo Escaneo IA</span>
           </Link>
         }
       />
 
-      {/* Resumen de brotes georreferenciados */}
-      <div className="flex flex-wrap items-center justify-between gap-3 px-4 py-2.5 bg-emerald-50/70 border border-emerald-200/80 rounded-2xl text-xs text-stone-700">
-        <div className="flex items-center gap-2">
-          <span className="w-2.5 h-2.5 rounded-full bg-emerald-600 animate-pulse" />
-          <span className="font-bold text-emerald-950">
-            {filteredDiagnoses.length} {filteredDiagnoses.length === 1 ? 'análisis fitosanitario en el mapa' : 'análisis fitosanitarios en el mapa'}
-          </span>
+      {/* Resumen de brotes georreferenciados - Telemetría en vivo */}
+      <div className="flex flex-wrap items-center justify-between gap-4 p-4 sm:p-5 bg-gradient-to-r from-slate-900 to-slate-950 text-white rounded-3xl border border-slate-800 shadow-lg">
+        <div className="flex items-center gap-3">
+          <div className="w-9 h-9 rounded-xl bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center text-emerald-400">
+            <Crosshair className="w-5 h-5 animate-pulse" />
+          </div>
+          <div>
+            <div className="flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+              <span className="font-extrabold text-sm text-white">
+                {filteredDiagnoses.length} {filteredDiagnoses.length === 1 ? 'foco georreferenciado activo' : 'focos georreferenciados activos'}
+              </span>
+            </div>
+            <p className="text-[11px] text-slate-400 font-medium">
+              Telemetría satelital GNSS vinculada a parcelas de cultivo
+            </p>
+          </div>
         </div>
-        <div className="flex items-center gap-3 sm:gap-4 text-[11px] text-stone-600">
-          <span className="flex items-center gap-1.5 font-medium">
-            <span className="w-2 h-2 rounded-full bg-red-600" />
+
+        <div className="flex items-center gap-2 sm:gap-3 text-xs flex-wrap">
+          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl bg-rose-500/15 border border-rose-500/30 text-rose-300 font-bold text-[11px]">
+            <span className="w-2 h-2 rounded-full bg-rose-500" />
             {filteredDiagnoses.filter((d) => d.status === 'detected').length} Detectados
           </span>
-          <span className="flex items-center gap-1.5 font-medium">
-            <span className="w-2 h-2 rounded-full bg-amber-500" />
-            {filteredDiagnoses.filter((d) => d.status === 'treated' || d.status === 'monitoring').length} En seguimiento / Tratados
+          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl bg-amber-500/15 border border-amber-500/30 text-amber-300 font-bold text-[11px]">
+            <span className="w-2 h-2 rounded-full bg-amber-400" />
+            {filteredDiagnoses.filter((d) => d.status === 'treated' || d.status === 'monitoring').length} Seguimiento
           </span>
-          <span className="flex items-center gap-1.5 font-medium">
-            <span className="w-2 h-2 rounded-full bg-emerald-600" />
+          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 font-bold text-[11px]">
+            <span className="w-2 h-2 rounded-full bg-emerald-400" />
             {filteredDiagnoses.filter((d) => d.status === 'controlled').length} Controlados
           </span>
         </div>
@@ -160,12 +171,12 @@ function MapContent() {
 
       {/* Selector Rápido de Focos / Muestras */}
       {filteredDiagnoses.length > 0 && (
-        <div className="bg-white p-3 rounded-2xl border border-stone-200 shadow-sm flex items-center gap-2 overflow-x-auto">
-          <span className="text-[11px] font-bold text-stone-500 uppercase tracking-wider flex-shrink-0 flex items-center gap-1 pl-1">
-            <Crosshair className="w-3.5 h-3.5 text-emerald-700" />
+        <div className="bg-white p-3.5 rounded-3xl border border-slate-200/80 shadow-sm flex items-center gap-3 overflow-x-auto">
+          <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider flex-shrink-0 flex items-center gap-1 pl-1">
+            <Crosshair className="w-3.5 h-3.5 text-emerald-600" />
             Focos:
           </span>
-          <div className="flex items-center gap-1.5 overflow-x-auto">
+          <div className="flex items-center gap-2 overflow-x-auto scrollbar-none">
             {filteredDiagnoses.map((d) => {
               const isTarget = selectedDiagnosisId === d.id;
               const emoji = getCropEmoji(d.cropId);
@@ -174,15 +185,17 @@ function MapContent() {
                   key={d.id}
                   type="button"
                   onClick={() => setSelectedDiagnosisId(d.id)}
-                  className={`flex-shrink-0 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border text-xs transition-all ${
+                  className={`flex-shrink-0 inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl border text-xs font-bold transition-all ${
                     isTarget
-                      ? 'bg-emerald-700 text-white border-emerald-700 font-bold shadow-sm'
-                      : 'bg-stone-50 text-stone-700 border-stone-200 hover:bg-stone-100 hover:border-emerald-300'
+                      ? 'bg-emerald-600 text-white border-emerald-600 shadow-md shadow-emerald-700/20'
+                      : 'bg-slate-50 text-slate-700 border-slate-200/80 hover:bg-slate-100 hover:border-emerald-300'
                   }`}
                 >
                   <span>{emoji}</span>
                   <span>{d.predictedDiseaseName}</span>
-                  <span className="text-[10px] opacity-80">({(d.confidence * 100).toFixed(0)}%)</span>
+                  <span className={`text-[10px] ${isTarget ? 'text-emerald-100' : 'text-slate-400'}`}>
+                    ({(d.confidence * 100).toFixed(0)}%)
+                  </span>
                 </button>
               );
             })}
@@ -206,12 +219,12 @@ function MapContent() {
         <EmptyState
           title="No hay diagnósticos para los filtros seleccionados"
           description="Intenta cambiar los filtros de finca o estado, o realiza un nuevo análisis georreferenciado."
-          icon={<MapIcon className="w-7 h-7" />}
+          icon={<MapIcon className="w-8 h-8" />}
           actionText="Limpiar Filtros"
           onAction={() => setFilters({ farmId: '', plotId: '', cropId: '', status: '' })}
         />
       ) : (
-        <div className="h-[560px] w-full rounded-3xl overflow-hidden shadow-sm">
+        <div className="h-[580px] w-full rounded-3xl overflow-hidden shadow-card-hover border border-slate-200/80">
           <DiagnosisMap
             diagnoses={filteredDiagnoses}
             farms={farms}
@@ -228,9 +241,10 @@ function MapContent() {
 
 export default function MapPage() {
   return (
-    <Suspense fallback={<LoadingState message="Cargando mapa..." />}>
+    <Suspense fallback={<LoadingState message="Cargando mapa epidemiológico..." />}>
       <MapContent />
     </Suspense>
   );
 }
+
 

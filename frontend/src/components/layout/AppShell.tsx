@@ -30,11 +30,11 @@ export const AppShell: React.FC<AppShellProps> = ({ children }) => {
 
   // Rutas públicas (Landing, Login, Registro) no tienen barra lateral ni barra inferior
   if (isPublicRoute) {
-    return <main className="min-h-screen bg-stone-50">{children}</main>;
+    return <main className="min-h-screen bg-[#F8FAFC] text-slate-900">{children}</main>;
   }
 
   return (
-    <div className="flex min-h-screen bg-stone-50 text-stone-900">
+    <div className="flex min-h-screen bg-[#F8FAFC] text-slate-900 antialiased selection:bg-emerald-500 selection:text-white">
       {/* Sidebar escritorio */}
       <DesktopSidebar />
 
