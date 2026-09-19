@@ -1,0 +1,79 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Función auxiliar para comprobar autenticación
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    // Comprobar si el usuario es dueño del recurso
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    // Comprobar rol de administrador
+    function isAdmin() {
+      return isAuthenticated() && 
+        (request.auth.token.role == 'administrador' || 
+         request.auth.token.admin == true ||
+         get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'administrador');
+    }
+
+    // Colección: users
+    match /users/{userId} {
+      // Solo el propietario o un administrador pueden leer los datos del perfil (protege PII)
+      allow read: if isOwner(userId) || isAdmin();
+      
+      // Al registrarse, solo puede crear su propio perfil con rol 'productor'
+      allow create: if isOwner(userId) && 
+        (!('role' in request.resource.data) || request.resource.data.role == 'productor');
+      
+      // El usuario puede actualizar su perfil pero NO puede auto-ascenderse a administrador
+      allow update: if (isOwner(userId) && request.resource.data.role == resource.data.role) || isAdmin();
+      
+      // Solo administradores pueden eliminar perfiles
+      allow delete: if isAdmin();
+    }
+
+    // Colección: farms
+    match /farms/{farmId} {
+      allow read: if isAuthenticated() && (resource.data.ownerId == request.auth.uid || isAdmin());
+      allow create: if isAuthenticated() && request.resource.data.ownerId == request.auth.uid;
+      allow update, delete: if isAuthenticated() && (resource.data.ownerId == request.auth.uid || isAdmin());
+    }
+
+    // Colección: plots
+    match /plots/{plotId} {
+      allow read: if isAuthenticated() && (resource.data.ownerId == request.auth.uid || isAdmin());
+      allow create: if isAuthenticated() && request.resource.data.ownerId == request.auth.uid;
+      allow update, delete: if isAuthenticated() && (resource.data.ownerId == request.auth.uid || isAdmin());
+    }
+
+    // Colección maestra: crops (Lectura pública para autenticados, escritura admin)
+    match /crops/{cropId} {
+      allow read: if isAuthenticated();
+      allow write: if isAdmin();
+    }
+
+    // Colección maestra: diseases (Lectura pública para autenticados, escritura admin)
+    match /diseases/{diseaseId} {
+      allow read: if isAuthenticated();
+      allow write: if isAdmin();
+    }
+
+    // Colección: diagnoses
+    match /diagnoses/{diagnosisId} {
+      allow read: if isAuthenticated() && (resource.data.userId == request.auth.uid || isAdmin());
+      allow create: if isAuthenticated() && request.resource.data.userId == request.auth.uid;
+      allow update, delete: if isAuthenticated() && (resource.data.userId == request.auth.uid || isAdmin());
+    }
+
+    // Colección: followUps
+    match /followUps/{followUpId} {
+      allow read: if isAuthenticated() && (resource.data.userId == request.auth.uid || isAdmin());
+      allow create: if isAuthenticated() && request.resource.data.userId == request.auth.uid;
+      allow update, delete: if isAuthenticated() && (resource.data.userId == request.auth.uid || isAdmin());
+    }
+  }
+}

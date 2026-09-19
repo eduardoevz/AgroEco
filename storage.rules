@@ -1,0 +1,41 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    
+    // Función para verificar autenticación
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    // Comprobar propiedad del directorio por userId
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    function isAdmin() {
+      return isAuthenticated() && (request.auth.token.role == 'administrador' || request.auth.token.admin == true);
+    }
+
+    // Regla para imágenes de diagnósticos: diagnoses/{userId}/{diagnosisId}/{fileName}
+    match /diagnoses/{userId}/{diagnosisId}/{fileName} {
+      allow read: if isOwner(userId) || isAdmin();
+      allow write: if isOwner(userId)
+                    && request.resource.size < 10 * 1024 * 1024 // Máximo 10MB
+                    && request.resource.contentType.matches('image/(jpeg|png|webp|jpg)');
+    }
+
+    // Regla para imágenes de seguimiento: followups/{userId}/{followUpId}/{fileName}
+    match /followups/{userId}/{followUpId}/{fileName} {
+      allow read: if isOwner(userId) || isAdmin();
+      allow write: if isOwner(userId)
+                    && request.resource.size < 10 * 1024 * 1024
+                    && request.resource.contentType.matches('image/(jpeg|png|webp|jpg)');
+    }
+
+    // Regla para imágenes maestras de cultivos y catálogo
+    match /master/{allPaths=**} {
+      allow read: if isAuthenticated();
+      allow write: if isAdmin();
+    }
+  }
+}
