@@ -14,6 +14,7 @@ import {
   User,
   LogOut,
   Sparkles,
+  BookOpen,
 } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 
@@ -24,6 +25,7 @@ export const DesktopSidebar: React.FC = () => {
   const navigation = [
     { name: 'Dashboard', href: '/dashboard', icon: Home },
     { name: 'Analizar Planta', href: '/analyze', icon: ScanLine, highlight: true },
+    { name: 'Catálogo Agrícola', href: '/catalog', icon: BookOpen },
     { name: 'Mapa de Brotes', href: '/map', icon: MapPin },
     { name: 'Mis Fincas', href: '/farms', icon: Trees },
     { name: 'Historial', href: '/history', icon: History },

@@ -3,13 +3,14 @@
 import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Home, ScanLine, Map, History } from 'lucide-react';
+import { Home, ScanLine, Map, History, BookOpen } from 'lucide-react';
 
 export const MobileBottomNav: React.FC = () => {
   const pathname = usePathname();
 
   const navItems = [
     { label: 'Inicio', href: '/dashboard', icon: Home },
+    { label: 'Catálogo', href: '/catalog', icon: BookOpen },
     { label: 'Analizar', href: '/analyze', icon: ScanLine, isPrimary: true },
     { label: 'Mapa', href: '/map', icon: Map },
     { label: 'Historial', href: '/history', icon: History },

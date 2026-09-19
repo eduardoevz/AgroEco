@@ -98,6 +98,13 @@ export default function LandingPage() {
           </Link>
 
           <div className="flex items-center gap-3">
+            <Link
+              href="/catalog"
+              className="hidden md:inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-bold text-slate-600 hover:text-emerald-700 hover:bg-emerald-50/50 rounded-xl transition-all"
+            >
+              <span>Catálogo Agrícola (6 Cultivos)</span>
+            </Link>
+
             {user ? (
               <Link
                 href="/dashboard"

@@ -31,6 +31,7 @@ import {
   Calendar,
   ChevronRight,
   ShieldAlert,
+  BookOpen,
 } from 'lucide-react';
 
 export default function DashboardPage() {
@@ -183,7 +184,7 @@ export default function DashboardPage() {
             Accesos Rápidos del Productor
           </h3>
         </div>
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3.5">
           <Link
             href="/analyze"
             className="p-5 bg-gradient-to-br from-emerald-800 to-emerald-950 text-white rounded-2xl shadow-sm hover:shadow-card-hover hover:-translate-y-0.5 transition-all duration-200 flex flex-col justify-between group border border-emerald-700/50"
@@ -195,6 +196,23 @@ export default function DashboardPage() {
               <span className="text-sm font-bold block mb-0.5">Analizar Planta</span>
               <span className="text-[11px] text-emerald-200/80 font-medium">
                 Cámara o imagen con IA
+              </span>
+            </div>
+          </Link>
+
+          <Link
+            href="/catalog"
+            className="p-5 bg-white border border-slate-200/80 rounded-2xl shadow-sm hover:shadow-card-hover hover:border-emerald-300 hover:-translate-y-0.5 transition-all duration-200 flex flex-col justify-between group"
+          >
+            <div className="w-10 h-10 rounded-xl bg-teal-50 text-teal-700 border border-teal-100 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+              <BookOpen className="w-5 h-5" />
+            </div>
+            <div>
+              <span className="text-sm font-bold text-slate-900 block mb-0.5 group-hover:text-emerald-700 transition-colors">
+                Catálogo Agrícola
+              </span>
+              <span className="text-[11px] text-slate-500 font-medium">
+                6 especies & 20 patologías
               </span>
             </div>
           </Link>
