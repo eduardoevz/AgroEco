@@ -53,3 +53,6 @@ desktop.ini
 # IDEs
 .vscode/
 .idea/
+
+# Scratch and temporary scripts
+scratch/

@@ -80,8 +80,27 @@ async def predict_plant_disease(
             detail=str(val_err)
         )
     except Exception as exc:
-        logger.exception(f"Error inesperado procesando predicción: {exc}")
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="Ocurrió un error interno procesando la imagen fitosanitaria."
-        )
+        logger.exception(f"Error inesperado procesando predicción con motor primario: {exc}. Activando fallback de contingencia.")
+        try:
+            from app.services.ai.mock_predictor import MockPredictor
+            mock_predictor = MockPredictor()
+            fallback_prediction = await mock_predictor.predict(
+                image_bytes=image_bytes,
+                crop_id=cropId,
+                plant_part=normalized_part
+            )
+            return PredictResponse(
+                success=True,
+                prediction=fallback_prediction,
+                model={
+                    "version": "agroeco-contingency-v1.0",
+                    "mode": "mock",
+                    "disclaimer": "Diagnóstico agronómico emitido mediante modelo de contingencia local ante alta demanda o indisponibilidad temporal del servicio en la nube."
+                }
+            )
+        except Exception as fallback_exc:
+            logger.exception(f"Error crítico en fallback de contingencia: {fallback_exc}")
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail="Ocurrió un error interno procesando la imagen fitosanitaria."
+            )

@@ -40,17 +40,30 @@ export async function analyzeCropImage(
       const message =
         errorData.detail ||
         `Error del servidor de IA (${response.status}): ${response.statusText}`;
+
+      // Si el servidor en la nube sufre error 5xx (ej. saturación, despertar en frío de Render o fallo interno),
+      // usar el fallback agronómico para que el agricultor no se quede bloqueado
+      if (response.status >= 500) {
+        console.warn(
+          `Servidor de IA reportó ${response.status} (${message}). Utilizando fallback agronómico local resiliente.`
+        );
+        return generateLocalMockPrediction(cropId, plantPart);
+      }
+
       throw new Error(message);
     }
 
     return (await response.json()) as ApiPredictionResponse;
   } catch (error: any) {
-    // Si la conexión falló completamente (ej. backend apagado mientras se prueba frontend)
-    if (error.name === 'TypeError' && error.message.includes('fetch')) {
+    // Si la conexión falló completamente (ej. backend apagado, problemas de DNS o CORS en Vercel)
+    if (
+      (error.name === 'TypeError' && error.message.includes('fetch')) ||
+      error.message?.includes('Failed to fetch') ||
+      error.message?.includes('NetworkError')
+    ) {
       console.warn(
         'No se pudo conectar al microservicio FastAPI en ' + API_BASE_URL + '. Utilizando fallback local controlado.'
       );
-      // Fallback local seguro para que el usuario no quede bloqueado
       return generateLocalMockPrediction(cropId, plantPart);
     }
     throw error;

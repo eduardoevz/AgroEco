@@ -39,7 +39,12 @@ class GeminiVisionPredictor(BasePredictor):
 
     async def predict(self, image_bytes: bytes, crop_id: str, plant_part: str) -> PredictionResult:
         if not self.client:
-            raise RuntimeError("GEMINI_API_KEY no configurada o cliente de Gemini no disponible.")
+            logger.warning("GEMINI_API_KEY no configurada o cliente de Gemini no disponible. Activando fallback a contingencia.")
+            from app.services.ai.mock_predictor import MockPredictor
+            mock = MockPredictor(catalog_path=os.path.join(os.path.dirname(__file__), "classes.json"))
+            fallback_res = await mock.predict(image_bytes, crop_id, plant_part)
+            fallback_res.botanicalObservation = "Diagnóstico generado por modelo de contingencia agronómica local (configure GEMINI_API_KEY para análisis multimodal en tiempo real)."
+            return fallback_res
 
         from google.genai import types
 
@@ -78,7 +83,7 @@ Instrucciones diagnósticas:
 
         try:
             response = self.client.models.generate_content(
-                model="gemini-3.6-flash",
+                model="gemini-2.5-flash",
                 contents=[
                     types.Part.from_bytes(data=image_bytes, mime_type="image/jpeg"),
                     prompt
