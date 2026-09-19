@@ -1,0 +1,762 @@
+=== PAGE 1 ===
+IA + vision por computadora + GPS + Firebase + mapas + seguimiento
+PROPUESTA DE DESARROLLO
+Sistema Inteligente para la
+Deteccion Temprana y Monitoreo
+Georreferenciado de Enfermedades
+en Cultivos
+Aplicacion web responsive orientada a productores y tecnicos agricolas. Integra
+analisis de imagenes con inteligencia artificial, ubicacion GPS, historial, mapas y
+seguimiento de incidencias.
+Tipo de solucion
+Aplicacion web / PWA
+Base de datos
+Firebase - Cloud Firestore
+Analisis inteligente
+Python + vision por computadora
+Georreferenciacion
+GPS + mapas interactivos
+Documento preparado para presentacion y validacion del alcance del prototipo.
+
+
+=== PAGE 2 ===
+Sistema inteligente para deteccion y monitoreo georreferenciado de enfermedades en cultivos
+Pagina 2
+Propuesta de aplicacion web - Documento para cliente
+1. VISION GENERAL DEL PROYECTO
+Descripcion de la solucion
+La propuesta consiste en desarrollar una aplicacion web inteligente de monitoreo fitosanitario capaz de
+analizar fotografias de hojas, tallos o frutos para identificar posibles enfermedades de los cultivos. La
+aplicacion combinara inteligencia artificial, vision por computadora, base de datos, GPS y mapas para que
+cada diagnostico preliminar quede asociado a una ubicacion concreta dentro de la finca o parcela.
+El objetivo no es unicamente indicar que posible enfermedad presenta una planta. El sistema busca
+responder cinco preguntas practicas para el productor: que se detecto, donde se detecto, cuando se
+detecto, que informacion de manejo debe consultar y como ha evolucionado el caso.
+Detectar
+Analizar una fotografia y estimar la clase
+de enfermedad mas probable.
+Ubicar
+Guardar las coordenadas GPS donde se realizo
+el analisis.
+Registrar
+Conservar imagen, fecha, parcela, cultivo,
+resultado y nivel de confianza.
+Dar seguimiento
+Consultar el historial y actualizar el
+estado del caso en el tiempo.
+Idea central
+La IA ayuda a estimar que puede estar afectando el cultivo; el GPS
+indica donde se observo; y la plataforma permite registrar, visualizar y
+dar seguimiento al problema.
+Vista conceptual de la experiencia web
+Panel de monitoreo fitosanitario
+46
+Analisis
+5
+Alertas
+12
+Casos activos
+Analizar cultivo
+Resultado
+Roya del cafe
+Confianza IA: 91%
+Web responsive / PWA
+
+
+=== PAGE 3 ===
+Sistema inteligente para deteccion y monitoreo georreferenciado de enfermedades en cultivos
+Pagina 3
+Propuesta de aplicacion web - Documento para cliente
+2. NECESIDAD Y PROPUESTA DE VALOR
+Problema que se busca atender
+Las enfermedades de los cultivos pueden ser detectadas cuando el dano ya es evidente. Esto limita la
+capacidad de reaccion temprana y puede aumentar las perdidas productivas. Ademas, aun cuando se
+identifica una planta afectada, suele ser dificil mantener un registro ordenado de la ubicacion, la fecha, los
+casos cercanos y la evolucion posterior.
+La aplicacion propone convertir cada inspeccion en un registro digital georreferenciado. De esta manera,
+las fotografias dejan de ser evidencias aisladas y pasan a formar parte de un historial que puede
+consultarse en mapas, filtros y estadisticas.
+Necesidad
+Respuesta de la aplicacion
+Deteccion oportuna
+Analisis de imagenes mediante un modelo de IA entrenado para clases
+especificas.
+Saber donde aparece el
+problema
+Registro de coordenadas GPS y visualizacion en mapas.
+Conservar evidencia
+Almacenamiento de imagen, resultado, fecha, cultivo, parcela y estado.
+Comparar casos en el tiempo
+Historial y seguimiento de diagnosticos.
+Priorizar inspecciones
+Mapa con marcadores y, en una evolucion posterior, mapa de calor o zonas
+de concentracion.
+Consultar informacion de apoyo
+Ficha de la enfermedad y recomendaciones generales de manejo validadas
+para el proyecto.
+Beneficio
+esperado
+El productor obtiene una herramienta de apoyo para documentar
+incidencias, localizar zonas de atencion y tomar decisiones de
+seguimiento con mayor informacion. El diagnostico generado por IA
+debe considerarse preliminar, no una sustitucion de la evaluacion de
+un especialista.
+
+
+=== PAGE 4 ===
+Sistema inteligente para deteccion y monitoreo georreferenciado de enfermedades en cultivos
+Pagina 4
+Propuesta de aplicacion web - Documento para cliente
+3. FUNCIONALIDADES DEL SISTEMA
+Funcionalidades principales
+El prototipo se estructura en modulos sencillos para que la experiencia sea util desde un telefono en
+campo y, al mismo tiempo, pueda consultarse desde una computadora.
+Funcionalidad
+Descripcion breve
+Registro e inicio de sesion
+Crea una cuenta y permite que cada usuario acceda a sus propias fincas, parcelas,
+imagenes y diagnosticos.
+Gestion de fincas
+Registra una o varias fincas con nombre, ubicacion general y datos basicos.
+Gestion de parcelas
+Organiza una finca por zonas o parcelas para asociar cada incidencia con un lugar
+concreto.
+Registro de cultivos
+Asocia el cultivo existente a cada parcela y filtra los analisis segun el cultivo
+seleccionado.
+Captura o carga de imagenes
+Permite tomar una fotografia desde el navegador movil o cargar una imagen
+existente.
+Seleccion de parte vegetal
+El usuario indica si la imagen corresponde a hoja, tallo o fruto para contextualizar
+el analisis.
+Analisis con inteligencia artificial
+El backend procesa la fotografia con vision por computadora y devuelve las clases
+mas probables.
+Diagnostico preliminar
+Muestra la posible enfermedad, nivel de confianza del modelo y datos
+relacionados.
+Recomendaciones informativas
+Presenta informacion general de manejo y acciones de verificacion asociadas a la
+enfermedad.
+Geolocalizacion GPS
+Solicita permiso al navegador y registra latitud, longitud y precision aproximada del
+dispositivo.
+Mapa de incidencias
+Ubica los diagnosticos como puntos dentro de un mapa para reconocer
+concentraciones espaciales.
+Historial de analisis
+Conserva los diagnosticos anteriores y permite filtrarlos por fecha, finca, parcela,
+cultivo o enfermedad.
+Seguimiento de casos
+Permite actualizar un caso como detectado, en seguimiento, tratado o controlado y
+agregar observaciones.
+Dashboard
+Resume cantidad de analisis, casos activos, cultivos afectados y distribucion de
+incidencias.
+Panel de administracion
+Gestiona catalogos de cultivos, enfermedades, sintomas, contenido informativo y
+parametros del prototipo.
+
+
+=== PAGE 5 ===
+Sistema inteligente para deteccion y monitoreo georreferenciado de enfermedades en cultivos
+Pagina 5
+Propuesta de aplicacion web - Documento para cliente
+4. PANTALLAS DE LA APLICACION WEB
+Pantallas previstas
+La interfaz sera responsive: se adaptara automaticamente al ancho del celular, tableta o computadora. En
+movil se priorizara una navegacion simple con accesos a Inicio, Analizar, Mapa e Historial.
+Pantalla
+Funcion
+1. Inicio / acceso
+Presentacion del sistema y opciones para iniciar sesion o crear una cuenta.
+2. Registro de usuario
+Formulario basico para crear la cuenta del productor o tecnico.
+3. Dashboard
+Resumen general con accesos rapidos, cantidad de analisis, casos activos y
+alertas.
+4. Mis fincas
+Listado, creacion y edicion de fincas asociadas al usuario.
+5. Detalle de finca / parcelas
+Muestra las parcelas de una finca, el cultivo asociado y el acceso al mapa.
+6. Analizar cultivo
+Inicia el flujo de diagnostico y solicita finca, parcela, cultivo y parte de la planta.
+7. Captura de fotografia
+Abre la camara del dispositivo o permite cargar una imagen desde archivos.
+8. Permiso y captura GPS
+Obtiene la ubicacion del navegador cuando el usuario autoriza el acceso.
+9. Analizando
+Pantalla de espera mientras el backend procesa la imagen con el modelo de IA.
+10. Resultado del diagnostico
+Presenta posible enfermedad, confianza, fotografia, ubicacion y recomendacion
+informativa.
+11. Mapa fitosanitario
+Visualiza puntos georreferenciados, filtros y detalle rapido de cada incidencia.
+12. Historial
+Lista analisis anteriores y permite buscar por fecha, cultivo, parcela, enfermedad
+o estado.
+13. Detalle / seguimiento
+Muestra toda la informacion del caso y permite actualizar su estado y
+observaciones.
+14. Perfil y configuracion
+Datos del usuario, preferencias basicas y administracion de sesion.
+15. Administracion (si aplica)
+Gestion de catalogos y contenido tecnico por un usuario autorizado.
+Experiencia
+web
+No sera necesario instalar una aplicacion desde una tienda. El usuario
+podra entrar desde el navegador. Opcionalmente, la web podra
+prepararse como PWA para agregarla a la pantalla de inicio del
+telefono.
+
+
+=== PAGE 6 ===
+Sistema inteligente para deteccion y monitoreo georreferenciado de enfermedades en cultivos
+Pagina 6
+Propuesta de aplicacion web - Documento para cliente
+5. FLUJO DEL PROGRAMA
+Flujo principal de uso
+El recorrido de uso esta pensado para reducir pasos durante una inspeccion en campo. El analisis debe
+poder iniciarse desde el dashboard con un boton visible de Analizar cultivo.
+1
+Finca y parcela
+Contexto del analisis
+>
+2
+Cultivo y parte
+Hoja, tallo o fruto
+>
+3
+Foto + GPS
+Captura y ubicacion
+>
+4
+Analisis IA
+Vision por computadora
+5
+Diagnostico
+Resultado + confianza
+>
+6
+Registro
+Firebase + historial
+>
+7
+Mapa
+Punto georreferenciado
+>
+8
+Seguimiento
+Estado y evolucion
+Detalle del flujo
+Paso
+Que ocurre
+1
+El usuario inicia sesion y selecciona finca y parcela.
+2
+Selecciona el cultivo y si analizara hoja, tallo o fruto.
+3
+Toma o carga una fotografia. El navegador solicita permiso para obtener la ubicacion.
+4
+La imagen se envia al backend de IA para procesamiento.
+5
+El modelo devuelve las clases mas probables y su nivel de confianza.
+6
+La aplicacion muestra el diagnostico preliminar y la informacion de apoyo.
+7
+El registro se guarda en Firebase junto con imagen, fecha, GPS, finca y parcela.
+8
+El punto aparece en el mapa y puede ser consultado desde el historial.
+9
+Posteriormente el usuario puede actualizar el estado del caso y agregar seguimiento.
+Resumen
+Seleccionar -> Fotografiar -> Geolocalizar -> Analizar -> Diagnosticar
+-> Registrar -> Mapear -> Dar seguimiento.
+
+
+=== PAGE 7 ===
+Sistema inteligente para deteccion y monitoreo georreferenciado de enfermedades en cultivos
+Pagina 7
+Propuesta de aplicacion web - Documento para cliente
+6. CULTIVOS Y ENFERMEDADES CONTEMPLADAS
+Cobertura inicial del catalogo
+El catalogo funcional contempla seis cultivos. Para el prototipo, el catalogo puede almacenar todas las
+enfermedades listadas; sin embargo, la IA solo podra clasificar con fiabilidad aquellas enfermedades para
+las que exista un conjunto de imagenes adecuado y un modelo efectivamente entrenado y validado.
+Arroz
+3
+Maiz
+3
+Frijol
+3
+Cafe
+3
+Tomate
+3
+Platano
+5
+Numero de enfermedades contempladas en el catalogo inicial
+Cultivo
+Enfermedades contempladas
+Arroz
+Pyricularia; Mancha parda; Tizon bacteriano.
+Maiz
+Roya comun; Tizon foliar del norte; Mancha de asfalto.
+Frijol
+Antracnosis; Roya del frijol; Mosaico comun.
+Cafe
+Roya del cafe; Ojo de gallo; Antracnosis.
+Tomate
+Tizon temprano; Tizon tardio; Oidio.
+Platano
+Sigatoka negra; Mal de Panama; Moko del platano; Pudricion de corona y frutos;
+Antracnosis.
+Total del
+catalogo
+inicial
+20 enfermedades distribuidas en 6 cultivos. Este numero corresponde
+al catalogo funcional propuesto; el numero de clases activas en la IA
+puede ser menor durante la primera etapa de entrenamiento.
+
+
+=== PAGE 8 ===
+Sistema inteligente para deteccion y monitoreo georreferenciado de enfermedades en cultivos
+Pagina 8
+Propuesta de aplicacion web - Documento para cliente
+7. FICHAS RESUMIDAS DE ENFERMEDADES
+Arroz, maiz y frijol
+Las siguientes descripciones son referencias visuales orientativas para el diseno del catalogo y del
+dataset. Antes de publicar recomendaciones agronomicas especificas, el contenido debe ser validado por
+una persona especialista o una fuente tecnica definida por el proyecto.
+Cultivo
+Enfermedad
+Referencia visual / sintomas orientativos
+Arroz
+Pyricularia
+Lesiones alargadas o en forma de huso, con centro grisaceo y
+bordes mas oscuros; puede afectar hojas y otras partes.
+Arroz
+Mancha parda
+Manchas pardas u ovaladas en hojas; puede asociarse con
+debilitamiento del tejido y afectacion del grano.
+Arroz
+Tizon bacteriano
+Lesiones que avanzan desde puntas o bordes de las hojas, con
+amarillamiento y secado del tejido.
+Maiz
+Roya comun
+Pustulas pequenas de color rojizo a cafe sobre las hojas.
+Maiz
+Tizon foliar del norte
+Lesiones largas, gris-verdosas o pardas, frecuentemente con forma
+similar a un cigarro.
+Maiz
+Mancha de asfalto
+Puntos negros elevados semejantes a gotas de asfalto; en casos
+severos pueden asociarse con necrosis foliar.
+Frijol
+Antracnosis
+Lesiones oscuras y deprimidas que pueden aparecer en nervaduras,
+tallos o vainas.
+Frijol
+Roya del frijol
+Pustulas pequenas de apariencia rojiza o cafe, principalmente en las
+hojas.
+Frijol
+Mosaico comun
+Patron de mosaico verde claro/oscuro, deformacion foliar y posible
+reduccion del crecimiento.
+
+
+=== PAGE 9 ===
+Sistema inteligente para deteccion y monitoreo georreferenciado de enfermedades en cultivos
+Pagina 9
+Propuesta de aplicacion web - Documento para cliente
+8. FICHAS RESUMIDAS DE ENFERMEDADES
+Cafe y tomate
+Cultivo
+Enfermedad
+Referencia visual / sintomas orientativos
+Cafe
+Roya del cafe
+Manchas amarillentas en el haz y esporulacion de tono anaranjado
+en el enves; puede provocar defoliacion.
+Cafe
+Ojo de gallo
+Manchas circulares con centro claro y borde definido; puede afectar
+hojas y frutos.
+Cafe
+Antracnosis
+Lesiones oscuras o necroticas en tejidos, ramas o frutos, segun el
+organo afectado.
+Tomate
+Tizon temprano
+Manchas pardas con anillos concentricos, con frecuencia visibles
+primero en hojas mas viejas.
+Tomate
+Tizon tardio
+Lesiones oscuras de avance rapido, favorecidas por condiciones
+humedas; puede afectar follaje y fruto.
+Tomate
+Oidio
+Crecimiento blanquecino o polvoso en la superficie de la hoja, con
+posible amarillamiento posterior.
+Como se usaran estas fichas dentro de la web
+●
+Como contenido informativo asociado al resultado de un diagnostico.
+●
+Como referencia para organizar el dataset y las clases del modelo de IA.
+●
+Como filtro de busqueda dentro del historial y el mapa.
+●
+Como base para futuras recomendaciones tecnicas, siempre que estas sean revisadas y aprobadas para el
+proyecto.
+Importante
+La aplicacion no debe prometer detectar enfermedades que no formen
+parte de las clases del modelo entrenado. El catalogo puede ser mas
+amplio que el modelo IA activo.
+
+
+=== PAGE 10 ===
+Sistema inteligente para deteccion y monitoreo georreferenciado de enfermedades en cultivos
+Pagina 10
+Propuesta de aplicacion web - Documento para cliente
+9. MODULO DE PLATANO
+Principales enfermedades del platano
+En sustitucion del banano, la propuesta incorpora platano como cultivo del catalogo inicial. Para este
+cultivo se contemplan cinco enfermedades o grupos de afecciones principales:
+Enfermedad
+Descripcion incluida en la propuesta
+1. Sigatoka negra (Pseudocercospora
+fijiensis)
+Es una de las enfermedades mas importantes del platano. Produce manchas
+oscuras en las hojas. Reduce el area foliar y puede disminuir el tamano y
+peso de los frutos.
+2. Mal de Panama (Fusarium oxysporum f.
+sp. cubense)
+Es causada por un hongo que vive en el suelo. Provoca amarillamiento y
+marchitez de las hojas. Puede causar la muerte de la planta.
+3. Moko del platano (Ralstonia
+solanacearum)
+Es una enfermedad bacteriana. Produce marchitez, amarillamiento y
+deterioro de los tejidos internos. Puede transmitirse mediante herramientas,
+insectos, agua y material de siembra contaminado.
+4. Pudricion de corona y frutos
+Puede aparecer principalmente despues de la cosecha. Provoca
+oscurecimiento y pudricion de los tejidos. Se favorece por heridas y
+condiciones de alta humedad.
+5. Antracnosis (Colletotrichum spp.)
+Produce lesiones oscuras en los frutos. Puede desarrollarse durante la
+maduracion y almacenamiento.
+Uso en IA
+Para que estas cinco clases puedan ser reconocidas mediante vision
+por computadora, sera necesario reunir imagenes representativas,
+etiquetarlas correctamente y evaluar si cada afeccion puede
+diferenciarse visualmente con la calidad de imagen disponible. Algunas
+condiciones pueden requerir informacion adicional mas alla de una
+fotografia.
+
+
+=== PAGE 11 ===
+Sistema inteligente para deteccion y monitoreo georreferenciado de enfermedades en cultivos
+Pagina 11
+Propuesta de aplicacion web - Documento para cliente
+10. ARQUITECTURA TECNOLOGICA PROPUESTA
+Como se conectaran los componentes
+La aplicacion se plantea como una arquitectura web modular. Firebase simplifica autenticacion, base de
+datos y almacenamiento, mientras que el procesamiento de imagenes se mantiene en un servicio Python
+separado para poder entrenar y actualizar el modelo de IA sin acoplarlo al frontend.
+Aplicacion web
+Next.js + TypeScript
+Servicios Firebase
+Auth + Firestore + Storage
+Mapas y GPS
+Geolocation + Leaflet/OSM
+Backend de inteligencia artificial
+Python + FastAPI + modelo de vision
+Base de datos
+Cloud Firestore
+Imagenes
+Firebase Storage
+Modelo IA
+Clases entrenadas
+Componente
+Tecnologia propuesta
+Funcion
+Frontend web
+Next.js + React + TypeScript
+Interfaz responsive, formularios, dashboard, historial y
+mapas.
+Diseno visual
+Tailwind CSS
+Construccion de una interfaz clara y adaptable a movil.
+Autenticacion
+Firebase Authentication
+Registro, inicio de sesion y control de acceso.
+Base de datos
+Cloud Firestore
+Fincas, parcelas, cultivos, diagnosticos, GPS y
+seguimiento.
+Imagenes
+Firebase Storage
+Fotografias originales y fotografias de seguimiento.
+Backend IA
+Python + FastAPI
+Recibe la imagen, ejecuta el modelo y devuelve
+probabilidades.
+Vision por computadora
+TensorFlow/PyTorch + OpenCV
+Preprocesamiento, inferencia y evolucion futura del
+modelo.
+GPS
+Geolocation API del navegador
+Obtiene coordenadas con permiso del usuario.
+Mapas
+Leaflet + OpenStreetMap
+Visualizacion de incidencias georreferenciadas.
+Despliegue web
+Vercel u opcion equivalente
+Publicacion del frontend mediante HTTPS.
+
+
+=== PAGE 12 ===
+Sistema inteligente para deteccion y monitoreo georreferenciado de enfermedades en cultivos
+Pagina 12
+Propuesta de aplicacion web - Documento para cliente
+11. ORGANIZACION DE LA BASE DE DATOS FIREBASE
+Modelo conceptual de informacion
+Cloud Firestore es una base de datos orientada a documentos. Para este proyecto se pueden organizar
+colecciones independientes y relacionarlas mediante identificadores. La estructura final se ajustara
+durante el desarrollo para equilibrar simplicidad, consultas y seguridad.
+Usuarios
+nombre
+email
+rol
+Fincas
+ownerId
+nombre
+ubicacion
+area
+Parcelas
+farmId
+nombre
+cultivo
+area
+Cultivos
+nombre
+descripcion
+Diagnosticos
+plotId
+enfermedad
+confianza
+GPS + fecha
+Seguimientos
+diagnosisId
+estado
+observacion
+imagen
+Enfermedades
+cultivo
+sintomas
+manejo
+contenido
+Coleccion
+Datos principales
+users
+Nombre, correo, rol, configuracion basica.
+farms
+Propietario, nombre, ubicacion general, area.
+plots
+Finca, nombre de parcela, cultivo, area.
+crops
+Nombre del cultivo y contenido descriptivo.
+diseases
+Cultivo, nombre, sintomas, contenido informativo y referencia de manejo.
+diagnoses
+Usuario, finca, parcela, imagen, enfermedad estimada, confianza, fecha, latitud,
+longitud y estado.
+followUps
+Diagnostico relacionado, fecha, observacion, nueva imagen y estado.
+Seguridad de
+datos
+Las reglas de seguridad de Firebase deben impedir que un productor
+consulte o modifique informacion perteneciente a otro usuario. Las
+imagenes no deben quedar publicas por defecto.
+
+
+=== PAGE 13 ===
+Sistema inteligente para deteccion y monitoreo georreferenciado de enfermedades en cultivos
+Pagina 13
+Propuesta de aplicacion web - Documento para cliente
+12. INTELIGENCIA ARTIFICIAL Y DIAGNOSTICO
+Que hara la IA
+El modelo de vision por computadora recibira una fotografia y estimara la probabilidad de que la imagen
+corresponda a una de las clases para las que fue entrenado. El resultado se mostrara como un diagnostico
+preliminar asistido por IA, no como una afirmacion absoluta.
+Ejemplo de salida
+Interpretacion
+Roya del cafe - 91 %
+Clase con mayor probabilidad segun el modelo.
+Ojo de gallo - 6 %
+Alternativa secundaria.
+Antracnosis - 2 %
+Probabilidad menor.
+Sano - 1 %
+Probabilidad estimada de no observar una de las enfermedades
+objetivo.
+Condiciones que pueden afectar el resultado
+●
+Iluminacion insuficiente o sombras intensas.
+●
+Imagen desenfocada, muy lejana o con movimiento.
+●
+Sintomas visuales similares entre distintas enfermedades.
+●
+Etapa muy temprana o muy avanzada de la afeccion.
+●
+Dataset pequeno, desbalanceado o con etiquetas incorrectas.
+●
+Diferencias entre variedad del cultivo, ambiente y condiciones de campo.
+Mensaje
+recomendado
+al usuario
+"El resultado corresponde a una estimacion preliminar generada por
+inteligencia artificial. Si el problema persiste o existe incertidumbre, se
+recomienda validar la observacion con personal tecnico o
+especializado."
+Estrategia de implementacion
+Aunque el catalogo contempla 20 enfermedades, es recomendable iniciar el entrenamiento con un
+subconjunto que disponga de imagenes suficientes y ampliar progresivamente la cobertura. Esto permite
+medir precision real antes de incorporar nuevas clases.
+
+
+=== PAGE 14 ===
+Sistema inteligente para deteccion y monitoreo georreferenciado de enfermedades en cultivos
+Pagina 14
+Propuesta de aplicacion web - Documento para cliente
+13. GPS, MAPAS Y SEGUIMIENTO
+Georreferenciacion de incidencias
+Cuando el usuario realice un analisis desde un navegador compatible, la aplicacion solicitara permiso para
+obtener la ubicacion. Si el usuario acepta, se almacenaran latitud, longitud y precision aproximada. La
+precision depende del dispositivo, senal disponible y condiciones del entorno.
+Elemento
+Funcion
+Marcador en el mapa
+Representa un diagnostico guardado en una coordenada.
+Color / estado
+Permite distinguir, por ejemplo, caso detectado, en seguimiento, tratado o
+controlado.
+Filtros
+Muestran solo una finca, parcela, cultivo, enfermedad, fecha o estado.
+Detalle del marcador
+Abre fotografia, resultado, confianza, fecha y seguimiento.
+Mapa de calor (evolucion)
+Puede representar concentraciones de registros cuando exista suficiente
+volumen de datos.
+Ejemplo conceptual de mapa de parcela
+● Sin indicios / controlado     ● Seguimiento     ● Incidencia activa
+●        ●          ●
+      ●           ●
+Requisito
+tecnico
+La geolocalizacion del navegador funciona de forma adecuada cuando
+la web esta publicada mediante HTTPS y el usuario concede el permiso
+correspondiente.
+
+
+=== PAGE 15 ===
+Sistema inteligente para deteccion y monitoreo georreferenciado de enfermedades en cultivos
+Pagina 15
+Propuesta de aplicacion web - Documento para cliente
+14. ALCANCE Y ASPECTOS QUE EL CLIENTE DEBE CONOCER
+Puntos importantes antes del desarrollo
+Aspecto
+Que significa para el proyecto
+Es una aplicacion web
+Se accede mediante navegador; no requiere publicacion inicial en Play Store o App
+Store.
+La IA tiene clases limitadas
+Solo podra identificar las enfermedades incluidas en el modelo efectivamente
+entrenado.
+El catalogo no equivale al modelo
+Puede haber 20 enfermedades documentadas, pero una primera version de IA puede
+entrenarse con menos clases.
+El resultado es preliminar
+No debe presentarse como diagnostico agronomico definitivo ni garantizar 100 % de
+precision.
+La calidad de imagen importa
+El usuario necesitara fotografias claras, enfocadas y con buena iluminacion.
+El GPS requiere permiso
+Si el usuario no autoriza su ubicacion, el analisis puede guardarse sin coordenadas o
+requerir ubicacion manual.
+La precision GPS varia
+No se debe prometer precision centimetro a centimetro con un telefono convencional.
+Firebase tiene limites de uso
+El prototipo puede operar con niveles gratuitos o de bajo costo, pero un crecimiento
+fuerte puede generar consumo facturable.
+El contenido tecnico debe validarse
+Recomendaciones de manejo y fichas agronomicas deben ser revisadas antes de
+publicarse como instrucciones.
+Privacidad y seguridad
+Las fotos, coordenadas y datos de finca deben quedar protegidos mediante reglas de
+acceso.
+Requisitos del cliente / equipo
+●
+Definir el nombre final del producto y la identidad visual.
+●
+Confirmar cuales cultivos y enfermedades tendran prioridad para la primera version de IA.
+●
+Aportar o aprobar el dataset de imagenes, o autorizar el uso de fuentes de datos compatibles con el
+proyecto.
+●
+Validar el contenido tecnico que se mostrara como sintomas y recomendaciones.
+●
+Definir si la aplicacion necesitara cuentas de productor solamente o tambien perfiles de tecnico y
+administrador.
+●
+Probar el prototipo en dispositivos reales y, de ser posible, con fotografias tomadas en campo.
+
+
+=== PAGE 16 ===
+Sistema inteligente para deteccion y monitoreo georreferenciado de enfermedades en cultivos
+Pagina 16
+Propuesta de aplicacion web - Documento para cliente
+15. ALCANCE RECOMENDADO DEL PROTOTIPO
+Primera version funcional (MVP)
+Para entregar un prototipo demostrable sin ampliar innecesariamente el alcance, se recomienda construir
+primero el circuito completo de principio a fin y dejar las funciones predictivas o de alta complejidad para
+una fase posterior.
+Incluido en MVP
+Evolucion futura
+Registro / inicio de sesion
+Modo offline avanzado y sincronizacion.
+Fincas y parcelas
+Dibujo de poligonos reales de parcelas.
+Catalogo de 6 cultivos y 20 enfermedades
+Ampliacion del catalogo a nuevos cultivos.
+Captura o carga de fotografia
+Captura guiada y control automatico de calidad.
+IA para clases seleccionadas
+Modelos multi-etapa, deteccion de lesiones o severidad.
+Diagnostico preliminar y confianza
+Estimacion robusta de severidad validada.
+GPS y marcadores en mapa
+Mapas de calor y analisis espacial avanzado.
+Historial y seguimiento basico
+Alertas automaticas y tendencias temporales.
+Dashboard basico
+Reportes PDF/Excel y analitica avanzada.
+Firebase como backend de datos
+Integraciones con clima, sensores IoT o drones.
+Criterio de
+exito
+El prototipo debe demostrar el flujo completo: un usuario registra una
+finca y parcela, toma una imagen, obtiene un resultado de IA, guarda
+la ubicacion, visualiza el caso en el mapa y puede consultarlo despues
+desde el historial.
+
+
+=== PAGE 17 ===
+
+

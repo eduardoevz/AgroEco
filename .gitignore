@@ -1,0 +1,55 @@
+# Dependencies
+node_modules/
+.pnp/
+.pnp.js
+
+# Testing
+coverage/
+
+# Next.js build output
+.next/
+out/
+build/
+dist/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+.pytest_cache/
+
+# Environment Variables (NUNCA SUBIR A CONTROL DE VERSIONES)
+.env
+.env.*
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+*.local
+backend/.env
+frontend/.env.local
+
+# Firebase Service Accounts & Private Keys (CRÍTICO)
+.firebase/
+*-firebase-*.json
+agroeco-*.json
+*adminsdk*.json
+*serviceAccount*.json
+*.pem
+*.key
+firebase-debug.log
+firestore-debug.log
+
+# Operating System
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDEs
+.vscode/
+.idea/
