@@ -80,11 +80,11 @@ async def predict_plant_disease(
             detail=str(val_err)
         )
     except Exception as exc:
-        logger.exception(f"Error inesperado procesando predicción con motor primario: {exc}. Activando fallback de contingencia.")
+        logger.exception(f"Error inesperado procesando predicción con motor primario: {exc}. Activando fallback a Red Neuronal.")
         try:
-            from app.services.ai.mock_predictor import MockPredictor
-            mock_predictor = MockPredictor()
-            fallback_prediction = await mock_predictor.predict(
+            from app.services.ai.predictor import RealModelPredictor
+            real_predictor = RealModelPredictor(settings.MODEL_PATH)
+            fallback_prediction = await real_predictor.predict(
                 image_bytes=image_bytes,
                 crop_id=cropId,
                 plant_part=normalized_part
@@ -92,15 +92,26 @@ async def predict_plant_disease(
             return PredictResponse(
                 success=True,
                 prediction=fallback_prediction,
-                model={
-                    "version": "agroeco-contingency-v1.0",
-                    "mode": "mock",
-                    "disclaimer": "Diagnóstico agronómico emitido mediante modelo de contingencia local ante alta demanda o indisponibilidad temporal del servicio en la nube."
-                }
+                model=real_predictor.get_model_info()
             )
         except Exception as fallback_exc:
-            logger.exception(f"Error crítico en fallback de contingencia: {fallback_exc}")
-            raise HTTPException(
-                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                detail="Ocurrió un error interno procesando la imagen fitosanitaria."
-            )
+            logger.warning(f"Red Neuronal no disponible en contingencia: {fallback_exc}. Activando catálogo agronómico.")
+            try:
+                from app.services.ai.mock_predictor import MockPredictor
+                mock_predictor = MockPredictor()
+                fallback_prediction = await mock_predictor.predict(
+                    image_bytes=image_bytes,
+                    crop_id=cropId,
+                    plant_part=normalized_part
+                )
+                return PredictResponse(
+                    success=True,
+                    prediction=fallback_prediction,
+                    model=mock_predictor.get_model_info()
+                )
+            except Exception as final_exc:
+                logger.exception(f"Error crítico en fallback final: {final_exc}")
+                raise HTTPException(
+                    status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                    detail="Ocurrió un error interno procesando la imagen fitosanitaria."
+                )

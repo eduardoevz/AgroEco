@@ -37,14 +37,27 @@ class GeminiVisionPredictor(BasePredictor):
     def mode(self) -> str:
         return "gemini"
 
-    async def predict(self, image_bytes: bytes, crop_id: str, plant_part: str) -> PredictionResult:
-        if not self.client:
-            logger.warning("GEMINI_API_KEY no configurada o cliente de Gemini no disponible. Activando fallback a contingencia.")
+    async def _fallback_to_neural_network(self, image_bytes: bytes, crop_id: str, plant_part: str, reason: str) -> PredictionResult:
+        logger.info(f"Redirigiendo análisis a la Red Neuronal convolucional (MobileNetV3): {reason}")
+        try:
+            from app.services.ai.predictor import RealModelPredictor
+            real_predictor = RealModelPredictor(settings.MODEL_PATH)
+            res = await real_predictor.predict(image_bytes, crop_id, plant_part)
+            if not res.botanicalObservation:
+                res.botanicalObservation = f"Diagnóstico fitopatológico asistido por Red Neuronal convolucional MobileNetV3 ({reason})."
+            return res
+        except Exception as e:
+            logger.warning(f"Red neuronal no disponible ({e}). Activando catálogo agronómico de contingencia.")
             from app.services.ai.mock_predictor import MockPredictor
             mock = MockPredictor(catalog_path=os.path.join(os.path.dirname(__file__), "classes.json"))
-            fallback_res = await mock.predict(image_bytes, crop_id, plant_part)
-            fallback_res.botanicalObservation = "Diagnóstico generado por modelo de contingencia agronómica local (configure GEMINI_API_KEY para análisis multimodal en tiempo real)."
-            return fallback_res
+            res = await mock.predict(image_bytes, crop_id, plant_part)
+            res.botanicalObservation = f"Diagnóstico de contingencia por catálogo agronómico oficial ({reason})."
+            return res
+
+    async def predict(self, image_bytes: bytes, crop_id: str, plant_part: str) -> PredictionResult:
+        if not self.client:
+            logger.warning("GEMINI_API_KEY no configurada o cliente no disponible. Redirigiendo a Red Neuronal.")
+            return await self._fallback_to_neural_network(image_bytes, crop_id, plant_part, "Gemini no inicializado")
 
         from google.genai import types
 
@@ -83,7 +96,7 @@ Instrucciones diagnósticas:
 
         try:
             response = self.client.models.generate_content(
-                model="gemini-2.5-flash",
+                model="gemini-3.6-flash",
                 contents=[
                     types.Part.from_bytes(data=image_bytes, mime_type="image/jpeg"),
                     prompt
@@ -121,9 +134,5 @@ Instrucciones diagnósticas:
             )
 
         except Exception as e:
-            logger.error(f"Error en Gemini Vision inference: {e}. Activando fallback a modelo de contingencia local.")
-            from app.services.ai.mock_predictor import MockPredictor
-            mock = MockPredictor(catalog_path=os.path.join(os.path.dirname(__file__), "classes.json"))
-            fallback_res = await mock.predict(image_bytes, crop_id, plant_part)
-            fallback_res.botanicalObservation = "Diagnóstico generado por modelo de contingencia agronómica local ante alta demanda temporal del servicio en la nube."
-            return fallback_res
+            logger.error(f"Error en Gemini Vision inference: {e}. Activando fallback a Red Neuronal.")
+            return await self._fallback_to_neural_network(image_bytes, crop_id, plant_part, "alta demanda temporal del servicio en la nube")
