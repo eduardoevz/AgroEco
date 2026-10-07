@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
 import { Sparkles, LogIn, AlertCircle, Mail, Lock, ArrowRight, ShieldCheck } from 'lucide-react';
 import { isDemoMode } from '@/lib/firebase/config';
+import { getAuthErrorMessage } from '@/lib/firebase/auth';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -16,28 +17,6 @@ export default function LoginPage() {
   const [submitting, setSubmitting] = useState(false);
   const [googleSubmitting, setGoogleSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-
-  const getFriendlyErrorMessage = (err: any) => {
-    const code = err?.code || '';
-    const msg = err?.message || '';
-
-    if (code === 'auth/popup-closed-by-user') {
-      return 'La ventana de Google se cerró antes de completar el inicio de sesión.';
-    }
-    if (code === 'auth/unauthorized-domain') {
-      return 'Dominio no autorizado en Firebase. Asegúrate de que tu dominio esté agregado en Firebase Console -> Authentication.';
-    }
-    if (code === 'auth/operation-not-allowed') {
-      return 'Este método de acceso no está habilitado en tu consola de Firebase.';
-    }
-    if (code === 'auth/invalid-credential' || code === 'auth/wrong-password' || code === 'auth/user-not-found') {
-      return 'Credenciales incorrectas. Verifica tu correo y contraseña o regístrate si aún no tienes cuenta.';
-    }
-    if (code === 'auth/network-request-failed') {
-      return 'Fallo de conexión con el servidor. Revisa tu conexión a internet.';
-    }
-    return msg || 'Error al iniciar sesión. Por favor verifica tus datos.';
-  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -54,7 +33,7 @@ export default function LoginPage() {
       router.push('/dashboard');
     } catch (err: any) {
       console.error('Error de login:', err);
-      setErrorMessage(getFriendlyErrorMessage(err));
+      setErrorMessage(getAuthErrorMessage(err));
     } finally {
       setSubmitting(false);
     }
@@ -69,7 +48,7 @@ export default function LoginPage() {
       router.push('/dashboard');
     } catch (err: any) {
       console.error('Error Google Sign-In:', err);
-      setErrorMessage(getFriendlyErrorMessage(err));
+      setErrorMessage(getAuthErrorMessage(err));
     } finally {
       setGoogleSubmitting(false);
     }

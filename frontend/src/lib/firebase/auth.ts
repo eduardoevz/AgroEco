@@ -110,6 +110,53 @@ export async function loginUser(email: string, pass: string): Promise<UserProfil
   return profile;
 }
 
+export function getAuthErrorMessage(err: any): string {
+  const code = err?.code || '';
+  const msg = err?.message || '';
+
+  if (code === 'auth/unauthorized-domain') {
+    return 'Dominio no autorizado en Firebase. Para permitir el acceso desde este dominio (ej: agroeco-oficial.vercel.app), agrégalo en Firebase Console -> Authentication -> Settings -> Dominios autorizados.';
+  }
+  if (code === 'auth/popup-blocked') {
+    return 'El navegador bloqueó la ventana emergente de Google. Por favor habilita las ventanas emergentes (pop-ups) en tu navegador para continuar.';
+  }
+  if (code === 'auth/popup-closed-by-user') {
+    return 'La ventana de Google se cerró antes de completar la autenticación. Inténtalo nuevamente.';
+  }
+  if (code === 'auth/cancelled-popup-request') {
+    return 'Se canceló la solicitud anterior de Google. Por favor haz clic de nuevo.';
+  }
+  if (code === 'auth/operation-not-allowed') {
+    return 'El método de acceso (Google o Correo) no está habilitado en tu consola de Firebase (Authentication -> Sign-in method).';
+  }
+  if (code === 'auth/account-exists-with-different-credential') {
+    return 'Ya existe una cuenta con este correo registrada mediante contraseña. Inicia sesión ingresando tus datos directamente.';
+  }
+  if (code === 'auth/email-already-in-use') {
+    return 'Este correo electrónico ya está registrado. Inicia sesión directamente.';
+  }
+  if (code === 'auth/weak-password') {
+    return 'La contraseña es muy débil. Debe tener al menos 6 caracteres.';
+  }
+  if (code === 'auth/invalid-email') {
+    return 'El formato del correo electrónico no es válido.';
+  }
+  if (
+    code === 'auth/invalid-credential' ||
+    code === 'auth/wrong-password' ||
+    code === 'auth/user-not-found'
+  ) {
+    return 'Credenciales incorrectas. Verifica tu correo y contraseña o regístrate si aún no tienes cuenta.';
+  }
+  if (code === 'auth/network-request-failed') {
+    return 'Fallo de conexión con el servidor. Revisa tu conexión a internet.';
+  }
+  if (code === 'auth/too-many-requests') {
+    return 'Demasiados intentos fallidos. Por seguridad, espera unos momentos antes de reintentar.';
+  }
+  return msg || 'Error en la autenticación. Por favor intenta de nuevo.';
+}
+
 export async function loginWithGoogle(): Promise<UserProfile> {
   if (isDemoMode || !auth) {
     let user = DEMO_USER;
@@ -135,7 +182,7 @@ export async function loginWithGoogle(): Promise<UserProfile> {
     id: fbUser.uid,
     name: fbUser.displayName || fbUser.email?.split('@')[0] || 'Productor',
     email: fbUser.email || '',
-    phone: fbUser.phoneNumber || undefined,
+    ...(fbUser.phoneNumber ? { phone: fbUser.phoneNumber } : {}),
     role: 'productor',
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
@@ -143,11 +190,23 @@ export async function loginWithGoogle(): Promise<UserProfile> {
 
   if (db) {
     try {
-      const docSnap = await getDoc(doc(db, 'users', fbUser.uid));
+      const docRef = doc(db, 'users', fbUser.uid);
+      const docSnap = await getDoc(docRef);
       if (docSnap.exists()) {
-        profile = docSnap.data() as UserProfile;
+        profile = { ...profile, ...docSnap.data() } as UserProfile;
       } else {
-        await setDoc(doc(db, 'users', fbUser.uid), profile);
+        const dataToSave: Record<string, any> = {
+          id: profile.id,
+          name: profile.name,
+          email: profile.email,
+          role: profile.role,
+          createdAt: profile.createdAt,
+          updatedAt: profile.updatedAt,
+        };
+        if (profile.phone) {
+          dataToSave.phone = profile.phone;
+        }
+        await setDoc(docRef, dataToSave);
       }
     } catch (err) {
       console.warn('Advertencia al consultar/guardar perfil en Firestore:', err);
@@ -239,7 +298,7 @@ export function subscribeAuthState(
       id: fbUser.uid,
       name: fbUser.displayName || fbUser.email?.split('@')[0] || 'Productor',
       email: fbUser.email || '',
-      phone: fbUser.phoneNumber || undefined,
+      ...(fbUser.phoneNumber ? { phone: fbUser.phoneNumber } : {}),
       role: 'productor',
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
@@ -249,7 +308,7 @@ export function subscribeAuthState(
       try {
         const snap = await getDoc(doc(firestoreDb, 'users', fbUser.uid));
         if (snap.exists()) {
-          profile = snap.data() as UserProfile;
+          profile = { ...profile, ...snap.data() } as UserProfile;
         }
       } catch (err) {
         console.warn('Advertencia cargando documento de usuario en Firestore (se mantiene sesión activa de Auth):', err);

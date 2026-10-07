@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
 import { Sparkles, UserPlus, AlertCircle, User, Mail, Lock, ArrowRight, ShieldCheck } from 'lucide-react';
+import { getAuthErrorMessage } from '@/lib/firebase/auth';
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -17,28 +18,6 @@ export default function RegisterPage() {
   const [submitting, setSubmitting] = useState(false);
   const [googleSubmitting, setGoogleSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-
-  const getFriendlyErrorMessage = (err: any) => {
-    const code = err?.code || '';
-    const msg = err?.message || '';
-
-    if (code === 'auth/email-already-in-use') {
-      return 'Este correo electrónico ya está registrado. Inicia sesión directamente.';
-    }
-    if (code === 'auth/weak-password') {
-      return 'La contraseña es muy débil. Debe tener al menos 6 caracteres y combinar letras y números.';
-    }
-    if (code === 'auth/invalid-email') {
-      return 'El formato del correo electrónico no es válido.';
-    }
-    if (code === 'auth/operation-not-allowed') {
-      return 'El registro por Email o Google no está habilitado en Firebase. Actívalo en la consola de Firebase.';
-    }
-    if (code === 'auth/popup-closed-by-user') {
-      return 'La ventana de Google se cerró antes de completar el registro.';
-    }
-    return msg || 'Error al registrar la cuenta. Inténtalo de nuevo.';
-  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -65,7 +44,7 @@ export default function RegisterPage() {
       router.push('/dashboard');
     } catch (err: any) {
       console.error('Error al registrarse:', err);
-      setErrorMessage(getFriendlyErrorMessage(err));
+      setErrorMessage(getAuthErrorMessage(err));
     } finally {
       setSubmitting(false);
     }
@@ -80,7 +59,7 @@ export default function RegisterPage() {
       router.push('/dashboard');
     } catch (err: any) {
       console.error('Error Google Sign-Up:', err);
-      setErrorMessage(getFriendlyErrorMessage(err));
+      setErrorMessage(getAuthErrorMessage(err));
     } finally {
       setGoogleSubmitting(false);
     }

@@ -1,7 +1,7 @@
 'use client';
 
-import React from 'react';
-import { usePathname } from 'next/navigation';
+import React, { useEffect } from 'react';
+import { usePathname, useRouter } from 'next/navigation';
 import { DesktopSidebar } from './DesktopSidebar';
 import { MobileBottomNav } from './MobileBottomNav';
 import { Header } from './Header';
@@ -16,9 +16,20 @@ const PUBLIC_ROUTES = ['/', '/login', '/register', '/forgot-password'];
 
 export const AppShell: React.FC<AppShellProps> = ({ children }) => {
   const pathname = usePathname();
+  const router = useRouter();
   const { user, loading } = useAuth();
 
   const isPublicRoute = PUBLIC_ROUTES.includes(pathname || '/');
+
+  useEffect(() => {
+    if (!loading) {
+      if (!user && !isPublicRoute) {
+        router.replace('/login');
+      } else if (user && (pathname === '/login' || pathname === '/register')) {
+        router.replace('/dashboard');
+      }
+    }
+  }, [loading, user, isPublicRoute, pathname, router]);
 
   if (loading) {
     return (
@@ -31,6 +42,14 @@ export const AppShell: React.FC<AppShellProps> = ({ children }) => {
   // Rutas públicas (Landing, Login, Registro) no tienen barra lateral ni barra inferior
   if (isPublicRoute) {
     return <main className="min-h-screen bg-[#F8FAFC] text-slate-900">{children}</main>;
+  }
+
+  if (!user) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-[#F8FAFC]">
+        <LoadingState message="Redirigiendo a inicio de sesión..." />
+      </div>
+    );
   }
 
   return (
